@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Cita {
+  IdCita         Int     @id @default(autoincrement())
+  IdCliente      Int?
+  Estado         String? @db.VarChar(50)
+  IdProducto     Int?
+  Fisioterapeuta String? @db.VarChar(255)
+  Observacion    String? @db.VarChar(255)
+}
+
+model DatosCliente {
+  IdCliente           Int                            @id @default(autoincrement())
+  NombreBebe          String?                        @db.VarChar(255)
+  FechaNac            DateTime?                      @db.Date
+  SemanaNac           Int?
+  Parto               DatosCliente_Parto?
+  PesoNac             Decimal?                       @db.Decimal(20, 6)
+  PesoActual          Decimal?                       @db.Decimal(20, 6)
+  Genero              DatosCliente_Genero?
+  NombreMama          String?                        @db.VarChar(255)
+  EdadMama            Int?
+  NombrePapa          String?                        @db.VarChar(255)
+  EdadPapa            Int?
+  Celular             String?                        @db.VarChar(255)
+  CodigoPais          String?                        @db.VarChar(10)
+  Email               String?                        @db.VarChar(255)
+  AutorizacionRrss    DatosCliente_AutorizacionRrss?
+  UsuarioRrss         String?                        @db.VarChar(255)
+  ConocimientoBabySpa String?                        @db.VarChar(255)
+}
+
+model DatosMedicos {
+  IdCliente                Int     @id
+  DificultadNacer          String? @db.VarChar(255)
+  EstimulacionPrevia       String? @db.VarChar(255)
+  CentroEstimulacionPrevia String? @db.VarChar(255)
+  DiagnosticoAlteracion    String? @db.VarChar(255)
+  EnfermedadDiagnosticada  String? @db.VarChar(255)
+  MedicamentoReciente      String? @db.VarChar(255)
+}
+
+model DatosPrimerEvaluciacion {
+  IdCliente       Int                                      @id
+  Visual          DatosPrimerEvaluciacion_Visual?
+  ContactoVisual  DatosPrimerEvaluciacion_ContactoVisual?
+  Auditivo        DatosPrimerEvaluciacion_Auditivo?
+  Musculatura     DatosPrimerEvaluciacion_Musculatura?
+  ControlCervical DatosPrimerEvaluciacion_ControlCervical?
+  CabezaAlzada    DatosPrimerEvaluciacion_CabezaAlzada?
+  Sentado         DatosPrimerEvaluciacion_Sentado?
+  Gateo           DatosPrimerEvaluciacion_Gateo?
+  Caminar         DatosPrimerEvaluciacion_Caminar?
+  EstadoAnimo     DatosPrimerEvaluciacion_EstadoAnimo?
+}
+
+model Productos {
+  IdProducto  Int      @id @default(autoincrement())
+  Nombre      String?  @db.VarChar(50)
+  Descripcion String?  @db.VarChar(50)
+  Precio      Decimal? @db.Decimal(20, 6)
+  Costo       Decimal? @db.Decimal(20, 6)
+  EsServicio  Boolean? @default(false)
+}
+
+model Venta {
+  IdSesion   Int       @id @default(autoincrement())
+  IdCliente  Int?
+  Fecha      DateTime? @db.Timestamp(0)
+  Total      Decimal?  @db.Decimal(20, 6)
+  Comentario String?   @db.VarChar(50)
+}
+
+model VentaDetalle {
+  Id         Int      @id @default(autoincrement())
+  IdProducto Int?
+  IdVenta    Int?
+  Cantidad   Int?
+  Subtotal   Decimal? @db.Decimal(20, 6)
+}
+
+enum DatosPrimerEvaluciacion_Visual {
+  Sigue
+  NoSigue
+}
+
+enum DatosPrimerEvaluciacion_ContactoVisual {
+  Si
+  No
+}
+
+enum DatosPrimerEvaluciacion_Auditivo {
+  Sigue
+  NoSigue
+}
+
+enum DatosPrimerEvaluciacion_Musculatura {
+  Bajo
+  Normal
+  Tension
+}
+
+enum DatosCliente_Parto {
+  Natural
+  Cesarea
+}
+
+enum DatosPrimerEvaluciacion_ControlCervical {
+  Si
+  No
+}
+
+enum DatosPrimerEvaluciacion_CabezaAlzada {
+  Si
+  No
+}
+
+enum DatosPrimerEvaluciacion_Sentado {
+  Si
+  No
+}
+
+enum DatosCliente_Genero {
+  Femenino
+  Masculino
+}
+
+enum DatosPrimerEvaluciacion_Gateo {
+  Si
+  No
+}
+
+enum DatosPrimerEvaluciacion_Caminar {
+  Si
+  No
+}
+
+enum DatosPrimerEvaluciacion_EstadoAnimo {
+  Tranquilo
+  Irritable
+}
+
+enum DatosCliente_AutorizacionRrss {
+  Si
+  No
+}
