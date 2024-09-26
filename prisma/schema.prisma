@@ -8,43 +8,53 @@ datasource db {
 }
 
 model Cita {
-  IdCita         Int     @id @default(autoincrement())
+  IdCita         Int           @id @default(autoincrement())
   IdCliente      Int?
-  Estado         String? @db.VarChar(50)
+  Fecha          DateTime      @db.Timestamp(0)
+  Estado         Cita_Estado
   IdProducto     Int?
-  Fisioterapeuta String? @db.VarChar(255)
-  Observacion    String? @db.VarChar(255)
+  Fisioterapeuta String?       @db.VarChar(255)
+  Observacion    String?       @db.VarChar(255)
+  DatosCliente   DatosCliente? @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_Cita_DatosCliente")
+  Productos      Productos?    @relation(fields: [IdProducto], references: [IdProducto], onDelete: NoAction, onUpdate: NoAction, map: "FK_Cita_Productos")
+
+  @@index([IdCliente], map: "FK_Cita_DatosCliente")
+  @@index([IdProducto], map: "FK_Cita_Productos")
 }
 
 model DatosCliente {
-  IdCliente           Int                            @id @default(autoincrement())
-  NombreBebe          String?                        @db.VarChar(255)
-  FechaNac            DateTime?                      @db.Date
-  SemanaNac           Int?
-  Parto               DatosCliente_Parto?
-  PesoNac             Decimal?                       @db.Decimal(20, 6)
-  PesoActual          Decimal?                       @db.Decimal(20, 6)
-  Genero              DatosCliente_Genero?
-  NombreMama          String?                        @db.VarChar(255)
-  EdadMama            Int?
-  NombrePapa          String?                        @db.VarChar(255)
-  EdadPapa            Int?
-  Celular             String?                        @db.VarChar(255)
-  CodigoPais          String?                        @db.VarChar(10)
-  Email               String?                        @db.VarChar(255)
-  AutorizacionRrss    DatosCliente_AutorizacionRrss?
-  UsuarioRrss         String?                        @db.VarChar(255)
-  ConocimientoBabySpa String?                        @db.VarChar(255)
+  IdCliente               Int                      @id @default(autoincrement())
+  NombreBebe              String?                  @db.VarChar(255)
+  FechaNac                DateTime?                @db.Date
+  SemanaNac               Int?
+  Parto                   DatosCliente_Parto?
+  PesoNac                 Decimal?                 @db.Decimal(20, 6)
+  PesoActual              Decimal?                 @db.Decimal(20, 6)
+  Genero                  DatosCliente_Genero?
+  NombreMama              String?                  @db.VarChar(255)
+  EdadMama                Int?
+  NombrePapa              String?                  @db.VarChar(255)
+  EdadPapa                Int?
+  Celular                 String?                  @db.VarChar(255)
+  CodigoPais              String?                  @db.VarChar(10)
+  Email                   String?                  @db.VarChar(255)
+  AutorizacionRrss        Boolean?
+  UsuarioRrss             String?                  @db.VarChar(255)
+  ConocimientoBabySpa     String?                  @db.VarChar(255)
+  Cita                    Cita[]
+  DatosMedicos            DatosMedicos?
+  DatosPrimerEvaluciacion DatosPrimerEvaluciacion?
 }
 
 model DatosMedicos {
-  IdCliente                Int     @id
-  DificultadNacer          String? @db.VarChar(255)
-  EstimulacionPrevia       String? @db.VarChar(255)
-  CentroEstimulacionPrevia String? @db.VarChar(255)
-  DiagnosticoAlteracion    String? @db.VarChar(255)
-  EnfermedadDiagnosticada  String? @db.VarChar(255)
-  MedicamentoReciente      String? @db.VarChar(255)
+  IdCliente                Int          @id
+  DificultadNacer          String?      @db.VarChar(255)
+  EstimulacionPrevia       String?      @db.VarChar(255)
+  CentroEstimulacionPrevia String?      @db.VarChar(255)
+  DiagnosticoAlteracion    String?      @db.VarChar(255)
+  EnfermedadDiagnosticada  String?      @db.VarChar(255)
+  MedicamentoReciente      String?      @db.VarChar(255)
+  DatosCliente             DatosCliente @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_DatosMedicos_DatosCliente")
 }
 
 model DatosPrimerEvaluciacion {
@@ -59,31 +69,41 @@ model DatosPrimerEvaluciacion {
   Gateo           DatosPrimerEvaluciacion_Gateo?
   Caminar         DatosPrimerEvaluciacion_Caminar?
   EstadoAnimo     DatosPrimerEvaluciacion_EstadoAnimo?
+  DatosCliente    DatosCliente                             @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_DatosPrimerEvaluciacion_DatosCliente")
 }
 
 model Productos {
-  IdProducto  Int      @id @default(autoincrement())
-  Nombre      String?  @db.VarChar(50)
-  Descripcion String?  @db.VarChar(50)
-  Precio      Decimal? @db.Decimal(20, 6)
-  Costo       Decimal? @db.Decimal(20, 6)
-  EsServicio  Boolean? @default(false)
+  IdProducto   Int            @id @default(autoincrement())
+  Nombre       String         @db.VarChar(50)
+  Descripcion  String?        @db.VarChar(50)
+  Precio       Decimal        @db.Decimal(20, 6)
+  Costo        Decimal?       @db.Decimal(20, 6)
+  EsServicio   Boolean?       @default(false)
+  Estado       Boolean?       @default(true)
+  Cita         Cita[]
+  VentaDetalle VentaDetalle[]
 }
 
 model Venta {
-  IdSesion   Int       @id @default(autoincrement())
-  IdCliente  Int?
-  Fecha      DateTime? @db.Timestamp(0)
-  Total      Decimal?  @db.Decimal(20, 6)
-  Comentario String?   @db.VarChar(50)
+  IdVenta      Int            @id @default(autoincrement())
+  IdCliente    Int?
+  Fecha        DateTime       @db.Timestamp(0)
+  Total        Decimal        @db.Decimal(20, 6)
+  Comentario   String?        @db.VarChar(50)
+  VentaDetalle VentaDetalle[]
 }
 
 model VentaDetalle {
-  Id         Int      @id @default(autoincrement())
-  IdProducto Int?
-  IdVenta    Int?
-  Cantidad   Int?
-  Subtotal   Decimal? @db.Decimal(20, 6)
+  Id         Int       @id @default(autoincrement())
+  IdProducto Int
+  IdVenta    Int
+  Cantidad   Int
+  Subtotal   Decimal   @db.Decimal(20, 6)
+  Productos  Productos @relation(fields: [IdProducto], references: [IdProducto], onDelete: NoAction, onUpdate: NoAction, map: "FK_VentaDetalle_Productos")
+  Venta      Venta     @relation(fields: [IdVenta], references: [IdVenta], onDelete: NoAction, onUpdate: NoAction, map: "FK_VentaDetalle_Venta")
+
+  @@index([IdProducto], map: "FK_VentaDetalle_Productos")
+  @@index([IdVenta], map: "FK_VentaDetalle_Venta")
 }
 
 enum DatosPrimerEvaluciacion_Visual {
@@ -147,7 +167,9 @@ enum DatosPrimerEvaluciacion_EstadoAnimo {
   Irritable
 }
 
-enum DatosCliente_AutorizacionRrss {
-  Si
-  No
+enum Cita_Estado {
+  Agendado
+  Realizado
+  Cancelado
+  NoAsistio
 }

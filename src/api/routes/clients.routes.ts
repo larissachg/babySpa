@@ -1,27 +1,20 @@
-import { Request, Response, Router } from "express";
-import { getAllClients } from "../controllers/clients.controller";
+import { Router } from "express";
+import {
+  firstEvaluation,
+  getClients,
+  registerClient,
+  updateClient,
+} from "../controllers";
+import { validateCreateClient, validateFirstEvaluation } from "../validator";
 
 const router = Router();
 
-router.get(
-  "/",
-  [],
-  async (_req: Request, res: Response): Promise<void> => {
-    try {
+router.post("/", [...validateCreateClient], registerClient);
 
-        const clients = await getAllClients();
+router.post("/:id", [...validateFirstEvaluation], firstEvaluation);
 
-      res.status(200);
-      res.json({
-        success: true,
-        message: "Obtenido con exito",
-        data: clients
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(404).json({ success: false, message: error.message });
-    }
-  }
-);
+router.put("/:id", [...validateCreateClient], updateClient);
+
+router.get("/", [], getClients);
 
 export { router };

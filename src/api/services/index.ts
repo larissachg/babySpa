@@ -1,2 +1,4 @@
+export * from "./products.service";
 export * from "./clients.service";
-export * from "./index";
+export * from "./appointment.service";
+export * from "./sales.service";
