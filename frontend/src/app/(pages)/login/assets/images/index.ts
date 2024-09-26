@@ -1,0 +1,1 @@
+export { default as logoBabySpa } from '/public/images/landing/logoBabySpa.png';
