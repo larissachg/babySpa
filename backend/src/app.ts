@@ -4,10 +4,12 @@ import helmet from "helmet";
 import { getRateLimiter } from "./utils/rateLimiter";
 import config from "./config";
 import { router } from "./api/routes";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.urlencoded({ extended: true, limit: "30mb" }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(

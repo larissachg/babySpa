@@ -12,20 +12,20 @@ export const registerAppointment = async (
   res: Response
 ): Promise<void> => {
   try {
-    const dataCliente = req.body as AppointmentInterface;
+    const dataCita = req.body as AppointmentInterface;
 
-    const newAppointment = await registerNewAppointment(dataCliente);
+    const newAppointment = await registerNewAppointment(dataCita);
 
     res.status(201).json({
       success: true,
-      message: "Cliente registrado con éxito",
+      message: "Cita registrado con éxito",
       data: newAppointment,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: `Error al registrar al cliente: ${error.message}`,
+      message: `Error al registrar la cita: ${error.message}`,
     });
   }
 };
@@ -35,29 +35,29 @@ export const updateAppointment = async (
   res: Response
 ): Promise<void> => {
   const id = parseInt(req.params.id);
-  const dataCliente = req.body as AppointmentInterface;
+  const dataCita = req.body as AppointmentInterface;
 
   if (isNaN(id)) {
     res.status(400).json({
       success: false,
-      message: "El ID del cliente no es válido",
+      message: "El ID del cita no es válido",
     });
     return;
   }
 
   try {
-    const update = await updateAppointmentById(id, dataCliente);
+    const update = await updateAppointmentById(id, dataCita);
 
     res.status(201).json({
       success: true,
-      message: "Cita de cliente actualizado con éxito",
+      message: "Cita actualizado con éxito",
       data: update,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
       success: false,
-      message: `Error al actualizar la cita del cliente: ${error.message}`,
+      message: `Error al actualizar la cita: ${error.message}`,
     });
   }
 };

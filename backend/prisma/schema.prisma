@@ -106,6 +106,16 @@ model VentaDetalle {
   @@index([IdVenta], map: "FK_VentaDetalle_Venta")
 }
 
+model Usuarios {
+  IdUsuario Int          @id @default(autoincrement())
+  Nombre    String       @db.VarChar(250)
+  Email     String?      @unique(map: "Email") @db.VarChar(150)
+  Usuario   String       @unique(map: "Usuario") @db.VarChar(50)
+  Password  String       @db.Text
+  Rol       Usuarios_Rol
+  Estado    Boolean      @default(true)
+}
+
 enum DatosPrimerEvaluciacion_Visual {
   Sigue
   NoSigue
@@ -172,4 +182,10 @@ enum Cita_Estado {
   Realizado
   Cancelado
   NoAsistio
+}
+
+enum Usuarios_Rol {
+  Caja
+  Admin
+  Fisio
 }
