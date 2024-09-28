@@ -5,18 +5,18 @@ const prisma = new PrismaClient();
 
 export const registerNewSale = async (data: VentaDataInterface) => {
   try {
-    const newSale = await prisma.venta.create({
+    const newSale = await prisma.ventas.create({
       data: {
         ...data.venta,
         Fecha: new Date(data.venta.Fecha),
-        VentaDetalle: {
+        VentasDetalles: {
           create: data.detalle.map((item) => ({
             ...item,
           })),
         },
       },
       include: {
-        VentaDetalle: true,
+        VentasDetalles: true,
       },
     });
 
@@ -28,14 +28,14 @@ export const registerNewSale = async (data: VentaDataInterface) => {
 
 // export const updateSaleById = async (id: number, data: VentaDataInterface) => {
 //   try {
-//     const updateSale = await prisma.venta.update({
+//     const updateSale = await prisma.ventas.update({
 //       where: {
 //         IdVenta: id,
 //       },
 //       data: {
 //         ...data,
 //         Fecha: new Date(data.venta.Fecha),
-//         VentaDetalle: {
+//         VentasDetalles: {
 //           update: {data: data.detalle},
 //         }
 //       },
@@ -49,9 +49,9 @@ export const registerNewSale = async (data: VentaDataInterface) => {
 
 export const getAllSales = async () => {
   try {
-    const sales = await prisma.venta.findMany({
+    const sales = await prisma.ventas.findMany({
       include: {
-        VentaDetalle: true,
+        VentasDetalles: true,
       },
     });
 

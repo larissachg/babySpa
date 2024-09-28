@@ -1,4 +1,4 @@
-export * from './appointment.service';
+export * from './appointments.service';
 export * from './clients.service';
 export * from './index';
 export * from './products.service';

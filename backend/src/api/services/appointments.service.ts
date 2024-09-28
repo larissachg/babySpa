@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export const registerNewAppointment = async (data: AppointmentInterface) => {
   try {
-    const newAppointment = await prisma.cita.create({
+    const newAppointment = await prisma.citas.create({
       data: {
         ...data,
         Fecha: new Date(data.Fecha),
@@ -23,7 +23,7 @@ export const updateAppointmentById = async (
   data: AppointmentInterface
 ) => {
   try {
-    const updateAppointment = await prisma.cita.update({
+    const updateAppointment = await prisma.citas.update({
       where: {
         IdCita: id,
       },
@@ -43,7 +43,7 @@ export const updateAppointmentById = async (
 
 export const getAllAppointment = async () => {
   try {
-    const appointments = await prisma.cita.findMany();
+    const appointments = await prisma.citas.findMany();
 
     return appointments;
   } catch (error) {

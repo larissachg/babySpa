@@ -11,7 +11,7 @@ import {
 import {
   validateCreateProduct,
   validateUpdateProduct,
-} from "../validator/product.validator";
+} from "../validator/products.validator";
 
 const router = Router();
 

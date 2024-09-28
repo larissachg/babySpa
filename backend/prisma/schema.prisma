@@ -7,103 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Cita {
-  IdCita         Int           @id @default(autoincrement())
-  IdCliente      Int?
-  Fecha          DateTime      @db.Timestamp(0)
-  Estado         Cita_Estado
-  IdProducto     Int?
-  Fisioterapeuta String?       @db.VarChar(255)
-  Observacion    String?       @db.VarChar(255)
-  DatosCliente   DatosCliente? @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_Cita_DatosCliente")
-  Productos      Productos?    @relation(fields: [IdProducto], references: [IdProducto], onDelete: NoAction, onUpdate: NoAction, map: "FK_Cita_Productos")
-
-  @@index([IdCliente], map: "FK_Cita_DatosCliente")
-  @@index([IdProducto], map: "FK_Cita_Productos")
-}
-
-model DatosCliente {
-  IdCliente               Int                      @id @default(autoincrement())
-  NombreBebe              String?                  @db.VarChar(255)
-  FechaNac                DateTime?                @db.Date
-  SemanaNac               Int?
-  Parto                   DatosCliente_Parto?
-  PesoNac                 Decimal?                 @db.Decimal(20, 6)
-  PesoActual              Decimal?                 @db.Decimal(20, 6)
-  Genero                  DatosCliente_Genero?
-  NombreMama              String?                  @db.VarChar(255)
-  EdadMama                Int?
-  NombrePapa              String?                  @db.VarChar(255)
-  EdadPapa                Int?
-  Celular                 String?                  @db.VarChar(255)
-  CodigoPais              String?                  @db.VarChar(10)
-  Email                   String?                  @db.VarChar(255)
-  AutorizacionRrss        Boolean?
-  UsuarioRrss             String?                  @db.VarChar(255)
-  ConocimientoBabySpa     String?                  @db.VarChar(255)
-  Cita                    Cita[]
-  DatosMedicos            DatosMedicos?
-  DatosPrimerEvaluciacion DatosPrimerEvaluciacion?
-}
-
 model DatosMedicos {
-  IdCliente                Int          @id
-  DificultadNacer          String?      @db.VarChar(255)
-  EstimulacionPrevia       String?      @db.VarChar(255)
-  CentroEstimulacionPrevia String?      @db.VarChar(255)
-  DiagnosticoAlteracion    String?      @db.VarChar(255)
-  EnfermedadDiagnosticada  String?      @db.VarChar(255)
-  MedicamentoReciente      String?      @db.VarChar(255)
-  DatosCliente             DatosCliente @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_DatosMedicos_DatosCliente")
-}
-
-model DatosPrimerEvaluciacion {
-  IdCliente       Int                                      @id
-  Visual          DatosPrimerEvaluciacion_Visual?
-  ContactoVisual  DatosPrimerEvaluciacion_ContactoVisual?
-  Auditivo        DatosPrimerEvaluciacion_Auditivo?
-  Musculatura     DatosPrimerEvaluciacion_Musculatura?
-  ControlCervical DatosPrimerEvaluciacion_ControlCervical?
-  CabezaAlzada    DatosPrimerEvaluciacion_CabezaAlzada?
-  Sentado         DatosPrimerEvaluciacion_Sentado?
-  Gateo           DatosPrimerEvaluciacion_Gateo?
-  Caminar         DatosPrimerEvaluciacion_Caminar?
-  EstadoAnimo     DatosPrimerEvaluciacion_EstadoAnimo?
-  DatosCliente    DatosCliente                             @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_DatosPrimerEvaluciacion_DatosCliente")
+  IdCliente                Int           @id
+  DificultadNacer          String?       @db.VarChar(255)
+  EstimulacionPrevia       String?       @db.VarChar(255)
+  CentroEstimulacionPrevia String?       @db.VarChar(255)
+  DiagnosticoAlteracion    String?       @db.VarChar(255)
+  EnfermedadDiagnosticada  String?       @db.VarChar(255)
+  MedicamentoReciente      String?       @db.VarChar(255)
+  DatosCliente             DatosClientes @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_DatosMedicos_DatosCliente")
 }
 
 model Productos {
-  IdProducto   Int            @id @default(autoincrement())
-  Nombre       String         @db.VarChar(50)
-  Descripcion  String?        @db.VarChar(50)
-  Precio       Decimal        @db.Decimal(20, 6)
-  Costo        Decimal?       @db.Decimal(20, 6)
-  EsServicio   Boolean?       @default(false)
-  Estado       Boolean?       @default(true)
-  Cita         Cita[]
-  VentaDetalle VentaDetalle[]
-}
-
-model Venta {
-  IdVenta      Int            @id @default(autoincrement())
-  IdCliente    Int?
-  Fecha        DateTime       @db.Timestamp(0)
-  Total        Decimal        @db.Decimal(20, 6)
-  Comentario   String?        @db.VarChar(50)
-  VentaDetalle VentaDetalle[]
-}
-
-model VentaDetalle {
-  Id         Int       @id @default(autoincrement())
-  IdProducto Int
-  IdVenta    Int
-  Cantidad   Int
-  Subtotal   Decimal   @db.Decimal(20, 6)
-  Productos  Productos @relation(fields: [IdProducto], references: [IdProducto], onDelete: NoAction, onUpdate: NoAction, map: "FK_VentaDetalle_Productos")
-  Venta      Venta     @relation(fields: [IdVenta], references: [IdVenta], onDelete: NoAction, onUpdate: NoAction, map: "FK_VentaDetalle_Venta")
-
-  @@index([IdProducto], map: "FK_VentaDetalle_Productos")
-  @@index([IdVenta], map: "FK_VentaDetalle_Venta")
+  IdProducto     Int              @id @default(autoincrement())
+  Nombre         String           @db.VarChar(50)
+  Descripcion    String?          @db.VarChar(50)
+  Precio         Decimal          @db.Decimal(20, 6)
+  Costo          Decimal?         @db.Decimal(20, 6)
+  EsServicio     Boolean?         @default(false)
+  Estado         Boolean?         @default(true)
+  Citas          Citas[]
+  VentasDetalles VentasDetalles[]
 }
 
 model Usuarios {
@@ -116,76 +40,152 @@ model Usuarios {
   Estado    Boolean      @default(true)
 }
 
-enum DatosPrimerEvaluciacion_Visual {
-  Sigue
-  NoSigue
+model Citas {
+  IdCita         Int            @id @default(autoincrement())
+  IdCliente      Int?
+  Fecha          DateTime       @db.Timestamp(0)
+  Estado         Citas_Estado
+  IdProducto     Int?
+  Fisioterapeuta String?        @db.VarChar(255)
+  Observacion    String?        @db.VarChar(255)
+  DatosClientes  DatosClientes? @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_Cita_DatosCliente")
+  Productos      Productos?     @relation(fields: [IdProducto], references: [IdProducto], onDelete: NoAction, onUpdate: NoAction, map: "FK_Cita_Productos")
+
+  @@index([IdCliente], map: "FK_Cita_DatosCliente")
+  @@index([IdProducto], map: "FK_Cita_Productos")
 }
 
-enum DatosPrimerEvaluciacion_ContactoVisual {
-  Si
-  No
+model DatosClientes {
+  IdCliente                Int                       @id @default(autoincrement())
+  NombreBebe               String?                   @db.VarChar(255)
+  FechaNac                 DateTime?                 @db.Date
+  SemanaNac                Int?
+  Parto                    DatosClientes_Parto?
+  PesoNac                  Decimal?                  @db.Decimal(20, 6)
+  PesoActual               Decimal?                  @db.Decimal(20, 6)
+  Genero                   DatosClientes_Genero?
+  NombreMama               String?                   @db.VarChar(255)
+  EdadMama                 Int?
+  NombrePapa               String?                   @db.VarChar(255)
+  EdadPapa                 Int?
+  Celular                  String?                   @db.VarChar(255)
+  CodigoPais               String?                   @db.VarChar(10)
+  Email                    String?                   @db.VarChar(255)
+  AutorizacionRrss         Boolean?
+  UsuarioRrss              String?                   @db.VarChar(255)
+  ConocimientoBabySpa      String?                   @db.VarChar(255)
+  Citas                    Citas[]
+  DatosMedicos             DatosMedicos?
+  DatosPrimeraEvaluciacion DatosPrimeraEvaluciacion?
 }
 
-enum DatosPrimerEvaluciacion_Auditivo {
-  Sigue
-  NoSigue
+model DatosPrimeraEvaluciacion {
+  IdCliente       Int                                       @id
+  Visual          DatosPrimeraEvaluciacion_Visual?
+  ContactoVisual  DatosPrimeraEvaluciacion_ContactoVisual?
+  Auditivo        DatosPrimeraEvaluciacion_Auditivo?
+  Musculatura     DatosPrimeraEvaluciacion_Musculatura?
+  ControlCervical DatosPrimeraEvaluciacion_ControlCervical?
+  CabezaAlzada    DatosPrimeraEvaluciacion_CabezaAlzada?
+  Sentado         DatosPrimeraEvaluciacion_Sentado?
+  Gateo           DatosPrimeraEvaluciacion_Gateo?
+  Caminar         DatosPrimeraEvaluciacion_Caminar?
+  EstadoAnimo     DatosPrimeraEvaluciacion_EstadoAnimo?
+  DatosClientes   DatosClientes                             @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_DatosPrimerEvaluciacion_DatosCliente")
 }
 
-enum DatosPrimerEvaluciacion_Musculatura {
-  Bajo
-  Normal
-  Tension
+model Ventas {
+  IdVenta        Int              @id @default(autoincrement())
+  IdCliente      Int?
+  Fecha          DateTime         @db.Timestamp(0)
+  Total          Decimal          @db.Decimal(20, 6)
+  Comentario     String?          @db.VarChar(50)
+  VentasDetalles VentasDetalles[]
 }
 
-enum DatosCliente_Parto {
-  Natural
-  Cesarea
-}
+model VentasDetalles {
+  Id         Int       @id @default(autoincrement())
+  IdProducto Int
+  IdVenta    Int
+  Cantidad   Int
+  Subtotal   Decimal   @db.Decimal(20, 6)
+  Productos  Productos @relation(fields: [IdProducto], references: [IdProducto], onDelete: NoAction, onUpdate: NoAction, map: "FK_VentaDetalle_Productos")
+  Ventas     Ventas    @relation(fields: [IdVenta], references: [IdVenta], onDelete: NoAction, onUpdate: NoAction, map: "FK_VentaDetalle_Venta")
 
-enum DatosPrimerEvaluciacion_ControlCervical {
-  Si
-  No
-}
-
-enum DatosPrimerEvaluciacion_CabezaAlzada {
-  Si
-  No
-}
-
-enum DatosPrimerEvaluciacion_Sentado {
-  Si
-  No
-}
-
-enum DatosCliente_Genero {
-  Femenino
-  Masculino
-}
-
-enum DatosPrimerEvaluciacion_Gateo {
-  Si
-  No
-}
-
-enum DatosPrimerEvaluciacion_Caminar {
-  Si
-  No
-}
-
-enum DatosPrimerEvaluciacion_EstadoAnimo {
-  Tranquilo
-  Irritable
-}
-
-enum Cita_Estado {
-  Agendado
-  Realizado
-  Cancelado
-  NoAsistio
+  @@index([IdProducto], map: "FK_VentaDetalle_Productos")
+  @@index([IdVenta], map: "FK_VentaDetalle_Venta")
 }
 
 enum Usuarios_Rol {
   Caja
   Admin
   Fisio
+}
+
+enum DatosPrimeraEvaluciacion_Visual {
+  Sigue
+  NoSigue
+}
+
+enum DatosPrimeraEvaluciacion_ContactoVisual {
+  Si
+  No
+}
+
+enum DatosPrimeraEvaluciacion_Auditivo {
+  Sigue
+  NoSigue
+}
+
+enum Citas_Estado {
+  Agendado
+  Realizado
+  Cancelado
+  NoAsistio
+}
+
+enum DatosPrimeraEvaluciacion_Musculatura {
+  Bajo
+  Normal
+  Tension
+}
+
+enum DatosClientes_Parto {
+  Natural
+  Cesarea
+}
+
+enum DatosPrimeraEvaluciacion_ControlCervical {
+  Si
+  No
+}
+
+enum DatosPrimeraEvaluciacion_CabezaAlzada {
+  Si
+  No
+}
+
+enum DatosClientes_Genero {
+  Femenino
+  Masculino
+}
+
+enum DatosPrimeraEvaluciacion_Sentado {
+  Si
+  No
+}
+
+enum DatosPrimeraEvaluciacion_Gateo {
+  Si
+  No
+}
+
+enum DatosPrimeraEvaluciacion_Caminar {
+  Si
+  No
+}
+
+enum DatosPrimeraEvaluciacion_EstadoAnimo {
+  Tranquilo
+  Irritable
 }

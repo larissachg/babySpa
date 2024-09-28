@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 export const registerNewClient = async (data: ClientInterface) => {
   try {
-    const newClient = await prisma.datosCliente.create({
+    const newClient = await prisma.datosClientes.create({
       data: {
         ...data.datosCliente,
         DatosMedicos: {
@@ -25,7 +25,7 @@ export const registerFirstEvaluation = async (
   data: FirstEvaluationInterface
 ) => {
   try {
-    const newEvaluation = await prisma.datosPrimerEvaluciacion.create({
+    const newEvaluation = await prisma.datosPrimeraEvaluciacion.create({
       data: {
         ...data,
         IdCliente: id,
@@ -42,7 +42,7 @@ export const registerFirstEvaluation = async (
 
 export const updateClientById = async (id: number, data: ClientInterface) => {
   try {
-    const updateClient = await prisma.datosCliente.update({
+    const updateClient = await prisma.datosClientes.update({
       where: {
         IdCliente: id,
       },
@@ -62,10 +62,10 @@ export const updateClientById = async (id: number, data: ClientInterface) => {
 
 export const getClientsFile = async () => {
   try {
-    const clients = await prisma.datosCliente.findMany({
+    const clients = await prisma.datosClientes.findMany({
       include: {
         DatosMedicos: true,
-        DatosPrimerEvaluciacion: true,
+        DatosPrimeraEvaluciacion: true,
       },
     });
 
