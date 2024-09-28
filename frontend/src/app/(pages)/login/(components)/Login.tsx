@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -23,16 +22,11 @@ export const Login = () => {
 
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-            />
+            <Label htmlFor="email" className="font-bold">Usuario</Label>
+            <Input id="user" type="text" placeholder="Ingrese su nombre de usuario" required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="font-bold">Password</Label>
             <Input id="password" type="password" required />
           </div>
         </CardContent>
