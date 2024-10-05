@@ -19,13 +19,13 @@ model DatosMedicos {
 }
 
 model Productos {
-  IdProducto     Int              @id @default(autoincrement())
-  Nombre         String           @db.VarChar(50)
-  Descripcion    String?          @db.VarChar(50)
-  Precio         Decimal          @db.Decimal(20, 6)
-  Costo          Decimal?         @db.Decimal(20, 6)
-  EsServicio     Boolean?         @default(false)
-  Estado         Boolean?         @default(true)
+  IdProducto     Int                 @id @default(autoincrement())
+  Nombre         String              @db.VarChar(50)
+  Descripcion    String?             @db.VarChar(50)
+  Precio         Decimal             @db.Decimal(20, 6)
+  Costo          Decimal?            @db.Decimal(20, 6)
+  Estado         Boolean?            @default(true)
+  Categoria      Productos_Categoria
   Citas          Citas[]
   VentasDetalles VentasDetalles[]
 }
@@ -100,6 +100,7 @@ model Ventas {
   Fecha          DateTime         @db.Timestamp(0)
   Total          Decimal          @db.Decimal(20, 6)
   Comentario     String?          @db.VarChar(50)
+  Estado         Boolean          @default(true)
   VentasDetalles VentasDetalles[]
 }
 
@@ -188,4 +189,10 @@ enum DatosPrimeraEvaluciacion_Caminar {
 enum DatosPrimeraEvaluciacion_EstadoAnimo {
   Tranquilo
   Irritable
+}
+
+enum Productos_Categoria {
+  Servicio
+  ServicioMommy
+  Item
 }

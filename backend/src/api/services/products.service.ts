@@ -31,7 +31,7 @@ export const getProductsByService = async () => {
   try {
     const serviceProducts = await prisma.productos.findMany({
       where: {
-        EsServicio: true,
+        Categoria: "Servicio",
         Estado: true,
       },
     });
@@ -48,7 +48,7 @@ export const getProductsByItems = async () => {
   try {
     const itemsProducts = await prisma.productos.findMany({
       where: {
-        EsServicio: false,
+        Categoria: "Item",
         Estado: true,
       },
     });

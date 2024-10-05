@@ -6,15 +6,28 @@ import {
   updateClient,
 } from "../controllers";
 import { validateCreateClient, validateFirstEvaluation } from "../validator";
+import { validateAuthentication } from "../middleware/auth";
 
 const router = Router();
 
-router.post("/", [...validateCreateClient], registerClient);
+router.post(
+  "/",
+  [validateAuthentication, ...validateCreateClient],
+  registerClient
+);
 
-router.post("/:id", [...validateFirstEvaluation], firstEvaluation);
+router.post(
+  "/:id",
+  [validateAuthentication, ...validateFirstEvaluation],
+  firstEvaluation
+);
 
-router.put("/:id", [...validateCreateClient], updateClient);
+router.put(
+  "/:id",
+  [validateAuthentication, ...validateCreateClient],
+  updateClient
+);
 
-router.get("/", [], getClients);
+router.get("/", [validateAuthentication], getClients);
 
 export { router };

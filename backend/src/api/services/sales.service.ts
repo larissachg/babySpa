@@ -26,27 +26,6 @@ export const registerNewSale = async (data: VentaDataInterface) => {
   }
 };
 
-// export const updateSaleById = async (id: number, data: VentaDataInterface) => {
-//   try {
-//     const updateSale = await prisma.ventas.update({
-//       where: {
-//         IdVenta: id,
-//       },
-//       data: {
-//         ...data,
-//         Fecha: new Date(data.venta.Fecha),
-//         VentasDetalles: {
-//           update: {data: data.detalle},
-//         }
-//       },
-//     });
-
-//     return updateSale;
-//   } catch (error) {
-//     throw new Error(`Error al actualizar la venta: ${error.message}`);
-//   }
-// };
-
 export const getAllSales = async () => {
   try {
     const sales = await prisma.ventas.findMany({
@@ -58,5 +37,21 @@ export const getAllSales = async () => {
     return sales;
   } catch (error) {
     throw new Error(`Error al obtener las ventas: ${error.message}`);
+  }
+};
+
+export const deleteSaleById = async (id: number) => {
+  try {
+    const deleteProduct = await prisma.ventas.update({
+      where: {
+        IdVenta: id,
+      },
+      data: {
+        Estado: false,
+      },
+    });
+    return deleteProduct;
+  } catch (error) {
+    throw new Error(`Error al eliminar el producto: ${error.message}`);
   }
 };

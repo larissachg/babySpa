@@ -12,21 +12,30 @@ import {
   validateCreateProduct,
   validateUpdateProduct,
 } from "../validator/products.validator";
+import { validateAuthentication } from "../middleware/auth";
 
 const router = Router();
 
-router.get("/", [], getProducts);
+router.get("/", [validateAuthentication], getProducts);
 
-router.get("/active", [], getActiveProducts);
+router.get("/active", [validateAuthentication], getActiveProducts);
 
-router.get("/service", [], getServiceProducts);
+router.get("/service", [validateAuthentication], getServiceProducts);
 
-router.get("/items", [], getItemsProducts);
+router.get("/items", [validateAuthentication], getItemsProducts);
 
-router.post("/", [...validateCreateProduct], createNewProduct);
+router.post(
+  "/",
+  [validateAuthentication, ...validateCreateProduct],
+  createNewProduct
+);
 
-router.put("/:id", [...validateUpdateProduct], updateProduct);
+router.put(
+  "/:id",
+  [validateAuthentication, ...validateUpdateProduct],
+  updateProduct
+);
 
-router.delete("/:id", deleteProduct);
+router.delete("/:id", [validateAuthentication], deleteProduct);
 
 export { router };

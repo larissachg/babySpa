@@ -5,11 +5,20 @@ import {
   updateAppointment,
 } from "../controllers";
 import { validateAppointment } from "../validator";
+import { validateAuthentication } from "../middleware/auth";
 
 const router = Router();
 
-router.post("/", [...validateAppointment], registerAppointment);
-router.put("/:id", [...validateAppointment], updateAppointment);
-router.get("/", [], getAppointments);
+router.post(
+  "/",
+  [validateAuthentication, ...validateAppointment],
+  registerAppointment
+);
+router.put(
+  "/:id",
+  [validateAuthentication, ...validateAppointment],
+  updateAppointment
+);
+router.get("/", [validateAuthentication], getAppointments);
 
 export { router };

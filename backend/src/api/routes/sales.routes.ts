@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { getSales, registerSale } from "../controllers";
+import { deleteSale, getSales, registerSale } from "../controllers";
 import { validateSale } from "../validator";
+import { validateAuthentication } from "../middleware/auth";
 
 const router = Router();
 
-router.post("/", [...validateSale], registerSale);
-// router.put("/:id", [...validateSale], updateSale);
-router.get("/", [], getSales);
+router.post("/", [validateAuthentication, ...validateSale], registerSale);
+router.get("/", [validateAuthentication], getSales);
+router.delete("/:id", [validateAuthentication], deleteSale);
 
 export { router };
