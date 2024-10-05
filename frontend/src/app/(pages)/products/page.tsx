@@ -1,9 +1,9 @@
-import { Products } from "./(components)/Products";
+import { ProductsTable } from "./(components)/Products";
 
 export const page = () => {
   return (
     <>
-      <Products />
+      <ProductsTable />
     </>
   );
 };

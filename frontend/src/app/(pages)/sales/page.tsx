@@ -1,9 +1,9 @@
-import { Sales } from "./(components)/Sales";
+import { SalesTable } from "./(components)/Sales";
 
 export const page = () => {
   return (
     <>
-      <Sales />
+      <SalesTable />
     </>
   );
 };

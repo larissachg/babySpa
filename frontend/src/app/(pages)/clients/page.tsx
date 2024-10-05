@@ -1,9 +1,9 @@
-import { Clients } from "./(components)/Clients";
+import { ClientsTable } from "./(components)/Clients";
 
 export const page = () => {
   return (
     <>
-      <Clients />
+      <ClientsTable />
     </>
   );
 };

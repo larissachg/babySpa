@@ -1,0 +1,55 @@
+:root {
+  --pinkLight: hsl(348, 72%, 89%);
+  --blueLight: hsl(195, 76%, 63%);
+  --blueLightDeg: hsla(195, 76%, 63%, 0.155);
+  --blue: hsl(207, 61%, 60%);
+  --gray: hsl(218, 11%, 39%);
+}
+
+.rbc-toolbar {
+  margin-bottom: 1.5rem;
+}
+.rbc-toolbar-label {
+  font-size: 1.3rem;
+  text-transform: capitalize;
+  font-weight: 600;
+}
+
+.rbc-btn-group button {
+  border-radius: 15px;
+  color: var(--gray);
+}
+
+.rbc-active {
+  background-color: var(--pinkLight) !important; 
+  color: #d5588c !important;
+  font-weight: 600;
+  box-shadow: none !important;
+}
+
+.rbc-header {
+    font-weight: lighter;
+    color: #878787;
+    text-transform: capitalize;
+}
+
+.rbc-month-view{
+    border-radius: 1rem;
+}
+
+.rbc-event{
+    background-color: var(--blue);
+}
+
+.rbc-time-view{
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.rbc-agenda-view{
+    border-radius: 1rem;
+}
+
+.rbc-today{
+    background-color: var(--blueLightDeg);
+}
