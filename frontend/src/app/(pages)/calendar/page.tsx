@@ -1,11 +1,7 @@
-import { Calendar } from "./(components)/Calendar";
+import { Calendar } from './(components)/Calendar'
 
 export const page = () => {
-  return (
-    <>
-      <Calendar />
-    </>
-  );
-};
+  return <Calendar />
+}
 
-export default page;
+export default page

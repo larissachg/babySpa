@@ -1,11 +1,7 @@
-import { ProductsTable } from "./(components)/Products";
+import { ProductsTable } from './(components)/Products'
 
 export const page = () => {
-  return (
-    <>
-      <ProductsTable />
-    </>
-  );
-};
+  return <ProductsTable />
+}
 
-export default page;
+export default page

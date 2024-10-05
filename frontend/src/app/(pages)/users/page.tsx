@@ -1,11 +1,7 @@
-import { UsersTable } from "./(components)/Users";
+import { UsersTable } from './(components)/Users'
 
 export const page = () => {
-  return (
-    <>
-      <UsersTable />
-    </>
-  );
-};
+  return <UsersTable />
+}
 
-export default page;
+export default page
