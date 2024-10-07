@@ -4,6 +4,7 @@ import Link from 'next/link'
 import {
   CalendarDays,
   CircleDollarSign,
+  LogOutIcon,
   PanelLeft,
   ShoppingCart,
   UserRoundSearch,
@@ -31,6 +32,7 @@ import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { logoBabySpaHorizontal } from '../assets/images'
 import { useState } from 'react'
+import { logout } from '@/actions/auth/logout'
 
 const navItems = [
   {
@@ -107,6 +109,23 @@ export const Navbar = () => {
                 </Tooltip>
               )
             })}
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href='#'
+                  onClick={async () => {
+                    await logout()
+                    window.location.replace('/login')
+                  }}
+                  className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 text-muted-foreground hover:text-foreground`}
+                >
+                  <LogOutIcon className='h-5 w-5 transition-all group-hover:scale-110' />
+                  <span className='sr-only'>Cerrar sesión</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side='right'>Cerrar sesión</TooltipContent>
+            </Tooltip>
           </nav>
         </aside>
       </TooltipProvider>
