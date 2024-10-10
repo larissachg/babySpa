@@ -1,7 +1,8 @@
-import { ProductsTable } from './(components)/Products'
+import { ProductsTable } from "./(components)/Products";
+import { getProducts } from "@/actions/products";
 
-export const page = () => {
-  return <ProductsTable />
+export default async function ProductsPage() {
+  const data = await getProducts();
+  
+  return <ProductsTable data={data} />;
 }
-
-export default page

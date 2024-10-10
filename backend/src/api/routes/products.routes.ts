@@ -4,6 +4,7 @@ import {
   deleteProduct,
   getActiveProducts,
   getItemsProducts,
+  getMommyServiceProducts,
   getProducts,
   getServiceProducts,
   updateProduct,
@@ -23,6 +24,8 @@ router.get("/active", [validateAuthentication], getActiveProducts);
 router.get("/service", [validateAuthentication], getServiceProducts);
 
 router.get("/items", [validateAuthentication], getItemsProducts);
+
+router.get("/mommy", [validateAuthentication], getMommyServiceProducts);
 
 router.post(
   "/",

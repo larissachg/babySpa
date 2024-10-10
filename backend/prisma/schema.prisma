@@ -23,8 +23,8 @@ model Productos {
   Nombre         String              @db.VarChar(50)
   Descripcion    String?             @db.VarChar(50)
   Precio         Decimal             @db.Decimal(20, 6)
-  Costo          Decimal?            @db.Decimal(20, 6)
-  Estado         Boolean?            @default(true)
+  Costo          Decimal             @default(0.000000) @db.Decimal(20, 6)
+  Estado         Boolean             @default(true)
   Categoria      Productos_Categoria
   Citas          Citas[]
   VentasDetalles VentasDetalles[]

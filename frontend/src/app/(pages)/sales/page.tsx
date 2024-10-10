@@ -1,7 +1,8 @@
-import { SalesTable } from './(components)/Sales'
+import { getSales } from "@/actions/sales";
+import { SalesTable } from "./(components)/Sales";
 
-export const page = () => {
-  return <SalesTable />
+export default async function SalesPage() {
+  const data = await getSales();
+
+  return <SalesTable data={data} />;
 }
-
-export default page

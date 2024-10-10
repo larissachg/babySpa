@@ -1,7 +1,8 @@
-import { ClientsTable } from './(components)/Clients'
+import { getClients } from "@/actions/clients";
+import { ClientsTable } from "./(components)/Clients";
 
-export const page = () => {
-  return <ClientsTable />
+export default async function ClientsPage() {
+  const data = await getClients();
+
+  return <ClientsTable data={data} />;
 }
-
-export default page

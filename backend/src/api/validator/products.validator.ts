@@ -1,6 +1,8 @@
 import { check } from "express-validator";
 import { validateResult } from "../middleware/validator";
 
+const validCategories = ["Servicio", "ServicioMommy", "Item"];
+
 const validateCreateProduct = [
   check("Nombre", "El nombre es obligatorio y tiene que ser un texto")
     .notEmpty()
@@ -16,9 +18,9 @@ const validateCreateProduct = [
     .optional()
     .isDecimal(),
 
-  check("EsServicio", "El servicio debe ser un valor booleano")
-    .optional()
-    .isBoolean(),
+  check("Categoria", "El producto debe pertenecer a una categoria")
+    .notEmpty()
+    .isIn(validCategories),
 
   check("Estado", "El estado debe ser un valor booleano")
     .optional()
@@ -40,9 +42,9 @@ const validateUpdateProduct = [
     .optional()
     .isDecimal(),
 
-  check("EsServicio", "El servicio debe ser un valor booleano")
+  check("Categoria", "El producto debe pertenecer a una categoria")
     .optional()
-    .isBoolean(),
+    .isIn(validCategories),
 
   check("Estado", "El estado debe ser un valor booleano")
     .optional()

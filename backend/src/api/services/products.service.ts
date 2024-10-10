@@ -61,6 +61,23 @@ export const getProductsByItems = async () => {
   }
 };
 
+export const getProductsByMommyService = async () => {
+  try {
+    const mommyProducts = await prisma.productos.findMany({
+      where: {
+        Categoria: "ServicioMommy",
+        Estado: true,
+      },
+    });
+
+    return mommyProducts;
+  } catch (error) {
+    throw new Error(
+      `Error al obtener los productos que son mommy service: ${error.message}`
+    );
+  }
+};
+
 export const createProduct = async (data: ProductInterface) => {
   try {
     const newProduct = await prisma.productos.create({

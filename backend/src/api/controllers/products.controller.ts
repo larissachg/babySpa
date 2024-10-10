@@ -7,6 +7,7 @@ import {
   getAllProducts,
   getProductsByActiveStatus,
   getProductsByItems,
+  getProductsByMommyService,
   getProductsByService,
   updateProductById,
 } from "../services";
@@ -77,6 +78,25 @@ export const getItemsProducts = async (
       success: true,
       message: "Productos de items obtenidos con exito",
       data: itemsProducts,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+
+export const getMommyServiceProducts = async (
+  _req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const mommyProducts = await getProductsByMommyService();
+
+    res.status(200);
+    res.json({
+      success: true,
+      message: "Productos de mommy service obtenidos con exito",
+      data: mommyProducts,
     });
   } catch (error) {
     console.error(error);

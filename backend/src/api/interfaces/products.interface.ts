@@ -5,6 +5,6 @@ export interface ProductInterface {
   Descripcion?: string;
   Precio: number;
   Costo: number;
-  EsServicio?: boolean;
   Categoria: Productos_Categoria;
+  Estado?: boolean;
 }

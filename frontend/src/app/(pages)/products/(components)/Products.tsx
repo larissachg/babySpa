@@ -35,57 +35,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ProductInterface } from "@/interfaces";
 
-const data: Payment[] = [
-  {
-    id: "1",
-    nombre: "Sesion Completa",
-    descripcion: "Estimulacion acuatica y masajes",
-    precio: 290,
-    costo: 0,
-    categoria: "Servicio",
-    estado: true,
-  },
-  {
-    id: "2",
-    nombre: "Aceite",
-    descripcion: "Aceite para masajes",
-    precio: 80,
-    costo: 0,
-    categoria: "Item",
-    estado: true,
-  },
-  {
-    id: "3",
-    nombre: "Babero",
-    descripcion: "Babero de silicona",
-    precio: 50,
-    costo: 30,
-    categoria: "Item",
-    estado: false,
-  },
-  {
-    id: "6",
-    nombre: "Baby Class",
-    descripcion: "Sesion individual baby class",
-    precio: 250,
-    costo: 0,
-    categoria: "Servicio",
-    estado: true,
-  },
-];
 
-export type Payment = {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  costo: number;
-  categoria: "Servicio" | "ServicioMommy" | "Item";
-  estado: boolean;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<ProductInterface>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -110,14 +63,14 @@ export const columns: ColumnDef<Payment>[] = [
   },
 
   {
-    accessorKey: "categoria",
+    accessorKey: "Categoria",
     header: "Categoría",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("categoria")}</div>
+      <div className="capitalize">{row.getValue("Categoria")}</div>
     ),
   },
   {
-    accessorKey: "nombre",
+    accessorKey: "Nombre",
     header: ({ column }) => {
       return (
         <Button
@@ -130,21 +83,21 @@ export const columns: ColumnDef<Payment>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("nombre")}</div>
+      <div className="capitalize">{row.getValue("Nombre")}</div>
     ),
   },
   {
-    accessorKey: "descripcion",
+    accessorKey: "Descripcion",
     header: "Descripción",
     cell: ({ row }) => (
-      <div className="normal-case">{row.getValue("descripcion")}</div>
+      <div className="normal-case">{row.getValue("Descripcion")}</div>
     ),
   },
   {
-    accessorKey: "precio",
+    accessorKey: "Precio",
     header: () => <div className="text-right">Precio</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("precio"));
+      const amount = parseFloat(row.getValue("Precio"));
 
       // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("es-ES", {
@@ -156,10 +109,10 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
-    accessorKey: "costo",
+    accessorKey: "Costo",
     header: () => <div className="text-right">Costo</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("costo"));
+      const amount = parseFloat(row.getValue("Costo"));
 
       // Format the amount as a dollar amount
       const formatted = new Intl.NumberFormat("es-ES", {
@@ -171,10 +124,10 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
-    id: "actions",
+    id: "Actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const product = row.original;
 
       return (
         <DropdownMenu>
@@ -187,7 +140,7 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(product.IdProducto.toString())}
             >
               Copy payment ID
             </DropdownMenuItem>
@@ -201,7 +154,11 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-export const ProductsTable = () => {
+interface ProductsTableProps {
+  data?: ProductInterface[]
+}
+
+export const ProductsTable = ({data}: ProductsTableProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -211,7 +168,7 @@ export const ProductsTable = () => {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

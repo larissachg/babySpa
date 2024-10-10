@@ -35,26 +35,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { SaleInterface } from "@/interfaces";
 
-const data: Sale[] = [
-  {
-    IdVenta: "1",
-    IdCliente: "1443",
-    Fecha: "2022-01-01",
-    Total: 360,
-    Comentario: "Sesion mas chupete",
-  },
-];
-
-interface Sale {
-  IdVenta: string;
-  IdCliente: string;
-  Fecha: string;
-  Total: number;
-  Comentario: string;
-}
-
-export const columns: ColumnDef<Sale>[] = [
+export const columns: ColumnDef<SaleInterface>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -105,14 +88,38 @@ export const columns: ColumnDef<Sale>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.getValue("Fecha")}</div>,
+    cell: ({ row }) => {
+      const dateValue = row.getValue("Fecha");
+  
+      const parsedDate = Date.parse(dateValue as string);
+      if (!isNaN(parsedDate)) {
+        const date = new Date(parsedDate);
+        
+        const formattedDate = new Intl.DateTimeFormat("es-ES", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }).format(date);
+  
+        return <div>{formattedDate}</div>;
+      }
+
+      return <div className="font-medium">Fecha no válida</div>;
+    },
   },
   {
     accessorKey: "Total",
-    header: "Total",
-    cell: ({ row }) => (
-      <div className="normal-case">{row.getValue("Total")}</div>
-    ),
+    header: () => <div>Total</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("Total"));
+
+      const formatted = new Intl.NumberFormat("es-ES", {
+        style: "currency",
+        currency: "BOB",
+      }).format(amount);
+
+      return <div className="font-medium">{formatted}</div>;
+    },
   },
   {
     accessorKey: "Comentario",
@@ -125,7 +132,7 @@ export const columns: ColumnDef<Sale>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const sale = row.original;
 
       return (
         <DropdownMenu>
@@ -138,7 +145,9 @@ export const columns: ColumnDef<Sale>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ver</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.IdVenta)}
+              onClick={() =>
+                navigator.clipboard.writeText(sale.IdVenta.toString())
+              }
             >
               Detalle de venta
             </DropdownMenuItem>
@@ -150,7 +159,11 @@ export const columns: ColumnDef<Sale>[] = [
   },
 ];
 
-export const SalesTable = () => {
+interface SalesTableProps {
+  data?: SaleInterface[];
+}
+
+export const SalesTable = ({ data }: SalesTableProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -160,7 +173,7 @@ export const SalesTable = () => {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
