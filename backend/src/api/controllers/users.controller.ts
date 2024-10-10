@@ -87,18 +87,19 @@ export const validateUser = async (
 
     const loginData = await userService.validateUser(dataUsuario.Usuario, dataUsuario.Password);
 
-    res.cookie("jwt", loginData.token, {
+    res.cookie("Authentication", loginData.token, {
       httpOnly: true, // No accesible desde el frontend (previene XSS)
       secure: config.environment === "production", // Solo envía la cookie por HTTPS en producción
       sameSite: "strict", // Previene CSRF
-      maxAge: 24 * 60 * 60 * 1000, // 1 día
+      expires: new Date(Date.now() + 1000 * 60 * 60), // 1 hour
+      //24 * 60 * 60 * 1000,  1 día
     });
 
     res.status(200);
     res.json({
       success: true,
       message: "Datos obtenidos con exito",
-      data: loginData,
+      data: loginData.user,
     });
   } catch (error) {
     console.error(error);

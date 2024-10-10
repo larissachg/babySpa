@@ -6,7 +6,7 @@ import { InternalRequest } from "../interfaces";
 
 
 export const validateAuthentication = async (req: InternalRequest, res: Response, next: NextFunction) => {
-    const token = req.cookies.jwt;
+    const token = req.cookies['Authentication'];
 
     if (!token) {
         return res.status(403).json({ message: "No token provided" });
