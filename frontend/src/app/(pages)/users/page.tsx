@@ -1,7 +1,7 @@
+import { getUsers } from '@/actions/users'
 import { UsersTable } from './(components)/Users'
 
-export const page = () => {
-  return <UsersTable />
+export default async function UsersPage() {
+  const data = await getUsers()
+  return <UsersTable data={data} />
 }
-
-export default page

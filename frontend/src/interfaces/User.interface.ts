@@ -1,6 +1,5 @@
 export interface AuthInterface {
     user: UserInterface;
-    token: string;
 }
 
 export interface UserInterface {

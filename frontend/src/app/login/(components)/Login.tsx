@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label'
 import Image from 'next/image'
 import { logoBabySpa } from '../assets/images'
 import { useFormState, useFormStatus } from 'react-dom'
-import { authenticate } from '@/actions/auth/login'
+import { authenticate } from '@/actions/auth'
 import { useEffect } from 'react'
 
 export const Login = () => {
@@ -51,9 +51,15 @@ export const Login = () => {
           </div>
           <div className='grid gap-2'>
             <Label htmlFor='password' className='font-bold'>
-              Password
+              Contraseña
             </Label>
-            <Input id='password' name='password' type='password' required />
+            <Input
+              id='password'
+              name='password'
+              type='password'
+              placeholder='Ingrese su contraseña'
+              required
+            />
           </div>
 
           {state !== 'Success' && (

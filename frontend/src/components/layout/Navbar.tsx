@@ -32,7 +32,7 @@ import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { logoBabySpaHorizontal } from '../assets/images'
 import { useState } from 'react'
-import { logout } from '@/actions/auth/logout'
+import { logout } from '@/actions/auth'
 
 const navItems = [
   {
