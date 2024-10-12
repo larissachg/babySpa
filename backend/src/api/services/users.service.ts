@@ -39,6 +39,18 @@ export const updateUser = async (
       },
     });
 
+    if (updateUser.Password !== data.Password) {
+      updateUser.Password = await encrypt(data.Password)
+      await prisma.usuarios.update({
+        where: {
+          IdUsuario: id
+        },
+        data: {
+          Password: updateUser.Password
+        }
+      })
+    }
+
     return updateUser;
   } catch (error) {
     throw new Error(
@@ -107,11 +119,7 @@ export const validateUser = async (username: string, password: string) => {
 
 export const getAllUser = async () => {
   try {
-    const appointments = await prisma.usuarios.findMany({
-      where: {
-        Estado: true,
-      }
-    });
+    const appointments = await prisma.usuarios.findMany();
 
     return appointments;
   } catch (error) {

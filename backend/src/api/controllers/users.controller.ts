@@ -77,7 +77,25 @@ export const getUsers = async (
     res.status(404).json({ success: false, message: error.message });
   }
 };
+export const getUserById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id);
+    const user = await userService.getUserById(id);
 
+    res.status(200);
+    res.json({
+      success: true,
+      message: "Datos obtenidos con exito",
+      data: user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
 export const validateUser = async (
   req: Request,
   res: Response

@@ -3,7 +3,7 @@ export interface AuthInterface {
 }
 
 export interface UserInterface {
-    IdUsuario: number;
+    IdUsuario?: number;
     Nombre: string;
     Email: string;
     Usuario: string;

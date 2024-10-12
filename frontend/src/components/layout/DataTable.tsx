@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   ColumnDef,
@@ -10,8 +10,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+  useReactTable
+} from '@tanstack/react-table'
 
 import {
   Table,
@@ -19,8 +19,8 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  TableRow
+} from '@/components/ui/table'
 
 import {
   Select,
@@ -29,29 +29,29 @@ import {
   SelectItem,
   SelectLabel,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  SelectValue
+} from '@/components/ui/select'
 
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { usePathname, useRouter } from "next/navigation";
+import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { usePathname, useRouter } from 'next/navigation'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  inputSearch: string;
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
+  inputSearch: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  inputSearch,
+  inputSearch
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
   const router = useRouter()
   const pathname = usePathname()
 
@@ -71,28 +71,30 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       columnVisibility,
-      rowSelection,
-    },
-  });
+      rowSelection
+    }
+  })
 
   return (
-    <div className="mx-4 sm:ml-0 lg:mx-5">
-      <div className="flex items-center py-4 justify-between">
+    <div className='mx-4 sm:ml-0 lg:mx-5'>
+      <div className='flex items-center py-4 justify-between'>
         <Input
-          placeholder="Buscar..."
+          placeholder='Buscar...'
           value={
-            (table.getColumn(inputSearch)?.getFilterValue() as string) ?? ""
+            (table.getColumn(inputSearch)?.getFilterValue() as string) ?? ''
           }
           onChange={(event) => {
-            table.getColumn(inputSearch)?.setFilterValue(event.target.value);
+            table.getColumn(inputSearch)?.setFilterValue(event.target.value)
           }}
-          className="max-w-sm"
+          className='max-w-sm'
         />
 
-        <Button onClick={() => router.push(`${pathname}/form`)}>Agregar Nuevo</Button>
+        <Button onClick={() => router.push(`${pathname}/form`)}>
+          Agregar Nuevo
+        </Button>
       </div>
 
-      <div className="rounded-md border">
+      <div className='rounded-md border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -107,7 +109,7 @@ export function DataTable<TData, TValue>({
                             header.getContext()
                           )}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -117,10 +119,15 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      style={{
+                        width: cell.column.id === 'actions' ? '170px' : 'auto'
+                      }}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -133,7 +140,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className='h-24 text-center'
                 >
                   No results.
                 </TableCell>
@@ -142,23 +149,23 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
 
-        <div className="space-x-2 py-4 mx-2 flex justify-between items-center">
-          <div className="flex-1 text-sm text-muted-foreground">
+        <div className='space-x-2 py-4 mx-2 flex justify-between items-center'>
+          <div className='flex-1 text-sm text-muted-foreground'>
             {table.getFilteredRowModel().rows.length} fila(s) en total.
           </div>
 
-          <div className="flex items-center justify-end space-x-2">
+          <div className='flex items-center justify-end space-x-2'>
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
               Anterior
             </Button>
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
@@ -169,24 +176,24 @@ export function DataTable<TData, TValue>({
 
         <Select
           onValueChange={(value) => {
-            table.setPageSize(+value);
+            table.setPageSize(+value)
           }}
         >
-          <SelectTrigger className="w-[180px] m-2">
-            <SelectValue placeholder="10 Filas" />
+          <SelectTrigger className='w-[180px] m-2'>
+            <SelectValue placeholder='10 Filas' />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
               <SelectLabel>Filas por página</SelectLabel>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-              <SelectItem value="30">30</SelectItem>
-              <SelectItem value="50">50</SelectItem>
-              <SelectItem value="100">100</SelectItem>
+              <SelectItem value='10'>10</SelectItem>
+              <SelectItem value='20'>20</SelectItem>
+              <SelectItem value='30'>30</SelectItem>
+              <SelectItem value='50'>50</SelectItem>
+              <SelectItem value='100'>100</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
     </div>
-  );
+  )
 }

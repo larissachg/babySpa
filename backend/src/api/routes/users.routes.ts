@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getUserById,
   getUsers,
   registerUser,
   updateUser,
@@ -27,6 +28,7 @@ router.put(
   updateUserPassword
 );
 router.get("/", [validateAuthentication], getUsers);
+router.get("/:id", [validateAuthentication], getUserById);
 router.post("/login", [...validateLogin], validateUser);
 
 export { router };

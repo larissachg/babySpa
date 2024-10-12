@@ -1,123 +1,131 @@
-"use client";
+'use client'
 
-import { ColumnDef, FilterFn, Row } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ProductInterface } from "@/interfaces";
+import { ColumnDef, FilterFn, Row } from '@tanstack/react-table'
+import { ArrowUpDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { ProductInterface } from '@/interfaces'
+import { EditButton, ViewButton } from '@/components/layout'
 
 const myCustomFilterFn: FilterFn<ProductInterface> = (
   row: Row<ProductInterface>,
   IdProducto: string,
   filterValue: string
 ) => {
-  filterValue = filterValue.toLowerCase();
+  filterValue = filterValue.toLowerCase()
 
-  const filterParts = filterValue.split(" ");
+  const filterParts = filterValue.split(' ')
   const rowValues =
-    `${row.original.Nombre} ${row.original.Categoria} ${row.original.Precio} ${row.original.Descripcion}`.toLowerCase();
+    `${row.original.Nombre} ${row.original.Categoria} ${row.original.Precio} ${row.original.Descripcion}`.toLowerCase()
 
-  return filterParts.every((part) => rowValues.includes(part));
-};
+  return filterParts.every((part) => rowValues.includes(part))
+}
 
 export const columns: ColumnDef<ProductInterface>[] = [
   {
-    accessorKey: "Categoria",
-    header: "Categoría",
+    accessorKey: 'Categoria',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Categoría
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("Categoria")}</div>
-    ),
+      <div className='capitalize'>{row.getValue('Categoria')}</div>
+    )
   },
   {
-    accessorKey: "Nombre",
+    accessorKey: 'Nombre',
     filterFn: myCustomFilterFn,
     header: ({ column }) => {
       return (
         <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
           Nombre
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
-      );
+      )
     },
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("Nombre")}</div>
-    ),
+      <div className='capitalize'>{row.getValue('Nombre')}</div>
+    )
   },
   {
-    accessorKey: "Descripcion",
-    header: "Descripción",
-    cell: ({ row }) => (
-      <div className="normal-case">{row.getValue("Descripcion")}</div>
-    ),
+    accessorKey: 'Descripcion',
+    header: 'Descripción',
+    cell: ({ row }) => <div>{row.getValue('Descripcion')}</div>
   },
   {
-    accessorKey: "Precio",
-    header: () => <div className="text-right">Precio</div>,
+    accessorKey: 'Precio',
+    header: 'Precio',
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("Precio"));
+      const amount = parseFloat(row.getValue('Precio'))
 
       // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("es-ES", {
-        style: "currency",
-        currency: "BOB",
-      }).format(amount);
+      const formatted = new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'BOB'
+      }).format(amount)
 
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+      return <div>{formatted}</div>
+    }
   },
   {
-    accessorKey: "Costo",
-    header: () => <div className="text-right">Costo</div>,
+    accessorKey: 'Costo',
+    header: 'Costo',
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("Costo"));
+      const amount = parseFloat(row.getValue('Costo'))
 
       // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("es-ES", {
-        style: "currency",
-        currency: "BOB",
-      }).format(amount);
+      const formatted = new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'BOB'
+      }).format(amount)
 
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+      return <div>{formatted}</div>
+    }
   },
   {
-    id: "Actions",
-    enableHiding: false,
+    accessorKey: 'Estado',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Estado
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
-      const product = row.original;
+      const estado = row.getValue('Estado') as boolean
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ver</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(product.IdProducto.toString())
-              }
-            >
-              Detalle de producto
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+        <div className='capitalize'>
+          {estado ? 'Disponible' : 'No Disponible'}
+        </div>
+      )
+    }
   },
-];
+  {
+    id: 'Actions',
+    enableHiding: false,
+    cell: ({ row }) => {
+      const data = row.original
+
+      return (
+        <div className='text-end'>
+          <ViewButton id={data.IdProducto} ruta='/products/form' />
+          <EditButton id={data.IdProducto} ruta='/products/form' />
+        </div>
+      )
+    }
+  }
+]
