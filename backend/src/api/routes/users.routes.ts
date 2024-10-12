@@ -17,7 +17,7 @@ const router = Router();
 
 router.post(
   "/",
-  [ ...validateRegisterUser],
+  [validateAuthentication, ...validateRegisterUser],
   registerUser
 );
 router.put("/:id", [validateAuthentication, ...validateUpdateUser], updateUser);
