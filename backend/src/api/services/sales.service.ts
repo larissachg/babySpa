@@ -31,6 +31,7 @@ export const getAllSales = async () => {
     const sales = await prisma.ventas.findMany({
       include: {
         VentasDetalles: true,
+        DatosClientes: true,
       },
     });
 

@@ -39,7 +39,7 @@ export const authConfig: NextAuthConfig = {
                         secure: true,
                         httpOnly: true,
                         sameSite: 'strict',
-                        expires: new Date(Date.now() + 1000 * 60 * 60), // 1 hour
+                        expires: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
                     })
                 }
 

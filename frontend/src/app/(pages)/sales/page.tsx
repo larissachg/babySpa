@@ -1,8 +1,9 @@
 import { getSales } from "@/actions/sales";
-import { SalesTable } from "./(components)/Sales";
+import { DataTable } from "@/components/layout/DataTable";
+import { columns } from "./(components)/Columns";
 
 export default async function SalesPage() {
   const data = await getSales();
 
-  return <SalesTable data={data} />;
+  return <DataTable data={data} columns={columns} inputSearch="IdCliente" />;
 }

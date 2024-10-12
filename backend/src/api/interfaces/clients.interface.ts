@@ -20,7 +20,7 @@ export interface ClientDataInterface {
   Parto?: DatosClientes_Parto;
   PesoNac?: number;
   PesoActual?: number;
-  Genero?: DatosClientes_Genero;
+  Genero: DatosClientes_Genero;
   NombreMama?: string;
   EdadMama?: number;
   NombrePapa?: string;

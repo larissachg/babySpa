@@ -63,7 +63,7 @@ model DatosClientes {
   Parto                    DatosClientes_Parto?
   PesoNac                  Decimal?                  @db.Decimal(20, 6)
   PesoActual               Decimal?                  @db.Decimal(20, 6)
-  Genero                   DatosClientes_Genero?
+  Genero                   DatosClientes_Genero
   NombreMama               String?                   @db.VarChar(255)
   EdadMama                 Int?
   NombrePapa               String?                   @db.VarChar(255)
@@ -77,6 +77,7 @@ model DatosClientes {
   Citas                    Citas[]
   DatosMedicos             DatosMedicos?
   DatosPrimeraEvaluciacion DatosPrimeraEvaluciacion?
+  Ventas                   Ventas[]
 }
 
 model DatosPrimeraEvaluciacion {
@@ -101,7 +102,10 @@ model Ventas {
   Total          Decimal          @db.Decimal(20, 6)
   Comentario     String?          @db.VarChar(50)
   Estado         Boolean          @default(true)
+  DatosClientes  DatosClientes?   @relation(fields: [IdCliente], references: [IdCliente], onDelete: NoAction, onUpdate: NoAction, map: "FK_Ventas_DatosClientes")
   VentasDetalles VentasDetalles[]
+
+  @@index([IdCliente], map: "FK_Ventas_DatosClientes")
 }
 
 model VentasDetalles {
