@@ -17,7 +17,13 @@ export const apiGet = async <T>(url: string): Promise<ApiResponseInterface<T> | 
         });
         return data;
     } catch (error) {
-        console.error("Error en GET", error);
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                console.error("Error en la respuesta:", error.response.data);
+                return error.response.data;
+            }
+        }
+        console.error("Error inesperado:", error);
         return undefined;
     }
 };
@@ -32,7 +38,13 @@ export const apiPost = async <T, U>(url: string, body: U): Promise<ApiResponseIn
         });
         return data;
     } catch (error) {
-        console.error("Error en POST", error);
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                console.error("Error en la respuesta:", error.response.data);
+                return error.response.data;
+            }
+        }
+        console.error("Error inesperado:", error);
         return undefined;
     }
 };
@@ -47,7 +59,13 @@ export const apiPut = async <T, U>(url: string, body: U): Promise<ApiResponseInt
         });
         return data;
     } catch (error) {
-        console.error("Error en PUT", error);
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                console.error("Error en la respuesta:", error.response.data);
+                return error.response.data;
+            }
+        }
+        console.error("Error inesperado:", error);
         return undefined;
     }
 };
@@ -62,7 +80,13 @@ export const apiDelete = async <T>(url: string): Promise<ApiResponseInterface<T>
         });
         return data;
     } catch (error) {
-        console.error("Error en DELETE", error);
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                console.error("Error en la respuesta:", error.response.data);
+                return error.response.data;
+            }
+        }
+        console.error("Error inesperado:", error);
         return undefined;
     }
 };

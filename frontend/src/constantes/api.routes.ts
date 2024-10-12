@@ -7,6 +7,7 @@ export const ApiRoutes = {
   },
   USERS: {
     GET: `${backendUrl}/users`,
+    POST: `${backendUrl}/users`,
   },
   PRODUCTS: {
     GET: `${backendUrl}/products`,

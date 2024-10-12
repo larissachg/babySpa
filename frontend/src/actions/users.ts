@@ -2,7 +2,7 @@
 
 import { ApiRoutes } from "@/constantes";
 import { UserInterface } from "@/interfaces";
-import { apiGet } from "@/utils";
+import { apiGet, apiPost } from "@/utils";
 
 export const getUsers = async () => {
 
@@ -10,4 +10,11 @@ export const getUsers = async () => {
 
     return response?.data || [];
 
+}
+
+export const registerUser = async (data: UserInterface) => {
+    const response = await apiPost<UserInterface, UserInterface>(ApiRoutes.USERS.POST, data);
+    console.log(response);
+
+    return response;
 }
