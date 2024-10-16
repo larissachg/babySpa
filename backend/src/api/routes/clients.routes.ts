@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   firstEvaluation,
+  getClient,
   getClients,
   registerClient,
   updateClient,
@@ -29,5 +30,6 @@ router.put(
 );
 
 router.get("/", [validateAuthentication], getClients);
+router.get("/:id", [validateAuthentication], getClient);
 
 export { router };

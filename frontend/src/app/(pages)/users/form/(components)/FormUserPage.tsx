@@ -91,6 +91,7 @@ const FormUserPage = ({ data, type }: FormUserPageProps) => {
           <FormField
             control={form.control}
             name='Nombre'
+            disabled={type === 'view'}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nombre</FormLabel>
@@ -105,6 +106,7 @@ const FormUserPage = ({ data, type }: FormUserPageProps) => {
           <FormField
             control={form.control}
             name='Email'
+            disabled={type === 'view'}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
@@ -123,6 +125,7 @@ const FormUserPage = ({ data, type }: FormUserPageProps) => {
           <FormField
             control={form.control}
             name='Usuario'
+            disabled={type === 'view'}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nombre de Usuario</FormLabel>

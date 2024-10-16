@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { DataTable } from "@/components/layout/DataTable";
 import { getProducts } from "@/actions/products";
 import { columns } from "./(components)/Columns";

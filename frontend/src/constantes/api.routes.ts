@@ -12,11 +12,15 @@ export const ApiRoutes = {
   },
   PRODUCTS: {
     GET: `${backendUrl}/products`,
+    POST: `${backendUrl}/products`,
+    PUT: `${backendUrl}/products`,
   },
   SALES: {
     GET: `${backendUrl}/sales`,
   },
   CLIENTS: {
     GET: `${backendUrl}/clients`,
+    POST: `${backendUrl}/clients`,
+    PUT: `${backendUrl}/clients`,
   },
 };

@@ -5,19 +5,21 @@ import {
   getActiveProducts,
   getItemsProducts,
   getMommyServiceProducts,
+  getProduct,
   getProducts,
   getServiceProducts,
   updateProduct,
-} from "../controllers/products.controller";
+} from "../controllers";
 import {
   validateCreateProduct,
   validateUpdateProduct,
-} from "../validator/products.validator";
+} from "../validator";
 import { validateAuthentication } from "../middleware/auth";
 
 const router = Router();
 
 router.get("/", [validateAuthentication], getProducts);
+router.get("/:id", [validateAuthentication], getProduct);
 
 router.get("/active", [validateAuthentication], getActiveProducts);
 

@@ -13,6 +13,20 @@ export const getAllProducts = async () => {
   }
 };
 
+export const getProductsById = async (id: number) => {
+  try {
+    const products = await prisma.productos.findUnique({
+      where: {
+        IdProducto: +id,
+      },
+    });
+
+    return products;
+  } catch (error) {
+    throw new Error(`Error al obtener el producto: ${error.message}`);
+  }
+};
+
 export const getProductsByActiveStatus = async () => {
   try {
     const activeProducts = await prisma.productos.findMany({

@@ -1,10 +1,5 @@
 import { Request, Response } from "express";
-import {
-  getClientsFile,
-  registerFirstEvaluation,
-  registerNewClient,
-  updateClientById,
-} from "../services";
+import * as clientService from "../services";
 import { ClientInterface, FirstEvaluationInterface } from "../interfaces";
 
 export const registerClient = async (
@@ -14,7 +9,7 @@ export const registerClient = async (
   try {
     const dataCliente = req.body as ClientInterface;
 
-    const newClient = await registerNewClient(dataCliente);
+    const newClient = await clientService.registerNewClient(dataCliente);
 
     res.status(201).json({
       success: true,
@@ -46,7 +41,7 @@ export const firstEvaluation = async (
       return;
     }
 
-    const newEvaluation = await registerFirstEvaluation(id, data);
+    const newEvaluation = await clientService.registerFirstEvaluation(id, data);
 
     res.status(201).json({
       success: true,
@@ -78,7 +73,7 @@ export const updateClient = async (
   }
 
   try {
-    const newUpdate = await updateClientById(id, dataCliente);
+    const newUpdate = await clientService.updateClientById(id, dataCliente);
 
     res.status(201).json({
       success: true,
@@ -99,13 +94,35 @@ export const getClients = async (
   res: Response
 ): Promise<void> => {
   try {
-    const clients = await getClientsFile();
+    const clients = await clientService.getClientsFile();
 
     res.status(200);
     res.json({
       success: true,
       message: "Clientes obtenidos con exito",
       data: clients,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+
+export const getClient = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const id = parseInt(req.params.id);
+    console.log(id);
+    
+    const client = await clientService.getClientById(id);
+
+    res.status(200);
+    res.json({
+      success: true,
+      message: "Cliente obtenido con exito",
+      data: client,
     });
   } catch (error) {
     console.error(error);

@@ -74,3 +74,21 @@ export const getClientsFile = async () => {
     throw new Error(`Error al obtener los clientes: ${error.message}`);
   }
 };
+
+export const getClientById = async (id: number) => {
+  try {
+    const client = await prisma.datosClientes.findUnique({
+      where: {
+        IdCliente: +id
+      },
+      include: {
+        DatosMedicos: true,
+        DatosPrimeraEvaluciacion: true,
+      },
+    });
+
+    return client;
+  } catch (error) {
+    throw new Error(`Error al obtener el cliente: ${error.message}`);
+  }
+};

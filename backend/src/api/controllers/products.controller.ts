@@ -1,20 +1,11 @@
 import { Request, Response } from "express";
 
 import { ProductInterface } from "../interfaces";
-import {
-  createProduct,
-  deleteProductById,
-  getAllProducts,
-  getProductsByActiveStatus,
-  getProductsByItems,
-  getProductsByMommyService,
-  getProductsByService,
-  updateProductById,
-} from "../services";
+import * as productService from "../services";
 
 export const getProducts = async (_req: Request, res: Response) => {
   try {
-    const products = await getAllProducts();
+    const products = await productService.getAllProducts();
 
     res.status(200);
     res.json({
@@ -28,12 +19,29 @@ export const getProducts = async (_req: Request, res: Response) => {
   }
 };
 
+export const getProduct = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    const product = await productService.getProductsById(id);
+
+    res.status(200);
+    res.json({
+      success: true,
+      message: "Producto obtenido con exito",
+      data: product,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+
 export const getActiveProducts = async (
   _req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const activeProducts = await getProductsByActiveStatus();
+    const activeProducts = await productService.getProductsByActiveStatus();
 
     res.status(200);
     res.json({
@@ -52,7 +60,7 @@ export const getServiceProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const serviceProducts = await getProductsByService();
+    const serviceProducts = await productService.getProductsByService();
 
     res.status(200);
     res.json({
@@ -71,7 +79,7 @@ export const getItemsProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const itemsProducts = await getProductsByItems();
+    const itemsProducts = await productService.getProductsByItems();
 
     res.status(200);
     res.json({
@@ -90,7 +98,7 @@ export const getMommyServiceProducts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const mommyProducts = await getProductsByMommyService();
+    const mommyProducts = await productService.getProductsByMommyService();
 
     res.status(200);
     res.json({
@@ -111,7 +119,7 @@ export const createNewProduct = async (
   try {
     const productData: ProductInterface = req.body;
 
-    const newProduct = await createProduct(productData);
+    const newProduct = await productService.createProduct(productData);
 
     res.status(201).json({
       success: true,
@@ -141,7 +149,7 @@ export const updateProduct = async (
       });
     }
 
-    const modifyProduct = await updateProductById(id, productData);
+    const modifyProduct = await productService.updateProductById(id, productData);
 
     res.status(201).json({
       success: true,
@@ -170,7 +178,7 @@ export const deleteProduct = async (
       });
     }
 
-    const removeProduct = await deleteProductById(id);
+    const removeProduct = await productService.deleteProductById(id);
 
     res.status(201).json({
       success: true,

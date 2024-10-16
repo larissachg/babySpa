@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getSales } from '@/actions/sales'
 import { DataTable } from '@/components/layout/DataTable'
 import { columns } from './(components)/Columns'

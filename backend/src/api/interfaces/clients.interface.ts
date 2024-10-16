@@ -14,8 +14,8 @@ import {
 } from "@prisma/client";
 
 export interface ClientDataInterface {
-  NombreBebe?: string;
-  FechaNac?: Date;
+  NombreBebe: string;
+  FechaNac: Date;
   SemanaNac?: number;
   Parto?: DatosClientes_Parto;
   PesoNac?: number;

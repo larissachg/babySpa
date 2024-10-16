@@ -1,32 +1,46 @@
 export interface ClientInterface {
-  IdCliente: number;
+  IdCliente?: number;
   NombreBebe: string;
-  FechaNac: null;
-  SemanaNac: null;
-  Parto: null;
-  PesoNac: null;
-  PesoActual: null;
-  Genero: null;
-  NombreMama: null;
-  EdadMama: null;
-  NombrePapa: null;
-  EdadPapa: null;
-  Celular: null;
-  CodigoPais: null;
-  Email: null;
-  AutorizacionRrss: null;
-  UsuarioRrss: null;
-  ConocimientoBabySpa: null;
+  FechaNac: Date;
+  SemanaNac: number;
+  Parto: 'Natural' | 'Cesarea';
+  PesoNac: number;
+  PesoActual: number;
+  Genero: 'Femenino' | 'Masculino';
+  NombreMama: string;
+  EdadMama: number;
+  NombrePapa: string;
+  EdadPapa: number;
+  Celular: number;
+  CodigoPais: number;
+  Email: string;
+  AutorizacionRrss: boolean;
+  UsuarioRrss: string;
+  ConocimientoBabySpa: string;
   DatosMedicos: DatosMedicosInterface;
-  DatosPrimeraEvaluciacion: null;
+  DatosPrimeraEvaluciacion: DatosPrimeraEvaluciacionInterface;
 }
 
 export interface DatosMedicosInterface {
-  IdCliente: number;
+  IdCliente?: number;
   DificultadNacer: string;
-  EstimulacionPrevia: null;
-  CentroEstimulacionPrevia: null;
-  DiagnosticoAlteracion: null;
-  EnfermedadDiagnosticada: null;
-  MedicamentoReciente: null;
+  EstimulacionPrevia: string;
+  CentroEstimulacionPrevia: string;
+  DiagnosticoAlteracion: string;
+  EnfermedadDiagnosticada: string;
+  MedicamentoReciente: string;
+}
+
+export interface DatosPrimeraEvaluciacionInterface {
+  IdCliente?: number;
+  Visual?: 'Sigue' | 'NoSigue';
+  ContactoVisual?: 'Si' | 'No';
+  Auditivo?: 'Sigue' | 'NoSigue';
+  Musculatura?: 'Bajo' | 'Normal' | 'Tension';
+  ControlCervical?: 'Si' | 'No';
+  CabezaAlzada?: 'Si' | 'No';
+  Sentado?: 'Si' | 'No';
+  Gateo?: 'Si' | 'No';
+  Caminar?: 'Si' | 'No';
+  EstadoAnimo?: 'Tranquilo' | 'Irritable';
 }
