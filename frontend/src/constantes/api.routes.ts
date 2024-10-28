@@ -23,4 +23,9 @@ export const ApiRoutes = {
     POST: `${backendUrl}/clients`,
     PUT: `${backendUrl}/clients`,
   },
+  APPOINTMENTS: {
+    GET: `${backendUrl}/appointments`,
+    POST: `${backendUrl}/appointments`,
+    PUT: `${backendUrl}/appointments`,
+  },
 };

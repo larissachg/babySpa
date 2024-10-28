@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import {
   getAllAppointment,
+  getAppointmentById,
   registerNewAppointment,
   updateAppointmentById,
 } from "../services";
@@ -74,6 +75,35 @@ export const getAppointments = async (
       success: true,
       message: "Citas obtenidas con exito",
       data: appointments,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(404).json({ success: false, message: error.message });
+  }
+};
+
+export const getAppointment = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const id = parseInt(req.params.id);
+
+  if (isNaN(id)) {
+    res.status(400).json({
+      success: false,
+      message: "El ID del cita no es válido",
+    });
+    return;
+  }
+
+  try {
+    const appointment = await getAppointmentById(id);
+
+    res.status(200);
+    res.json({
+      success: true,
+      message: "Cita obtenida con exito",
+      data: appointment,
     });
   } catch (error) {
     console.error(error);

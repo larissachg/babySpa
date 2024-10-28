@@ -43,7 +43,8 @@ model Usuarios {
 model Citas {
   IdCita         Int            @id @default(autoincrement())
   IdCliente      Int?
-  Fecha          DateTime       @db.Timestamp(0)
+  FechaInicio    DateTime       @db.Timestamp(0)
+  FechaFin       DateTime       @db.Timestamp(0)
   Estado         Citas_Estado
   IdProducto     Int?
   Fisioterapeuta String?        @db.VarChar(255)

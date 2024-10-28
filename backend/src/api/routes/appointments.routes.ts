@@ -1,10 +1,11 @@
 import { Router } from "express";
 import {
+  getAppointment,
   getAppointments,
   registerAppointment,
   updateAppointment,
 } from "../controllers";
-import { validateAppointment } from "../validator";
+import { validateAppointment, updateAppointments } from "../validator";
 import { validateAuthentication } from "../middleware/auth";
 
 const router = Router();
@@ -16,9 +17,10 @@ router.post(
 );
 router.put(
   "/:id",
-  [validateAuthentication, ...validateAppointment],
+  [validateAuthentication, ...updateAppointments],
   updateAppointment
 );
 router.get("/", [validateAuthentication], getAppointments);
+router.get("/:id", [validateAuthentication], getAppointment);
 
 export { router };

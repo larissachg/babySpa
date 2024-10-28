@@ -10,7 +10,7 @@ export default function PagesLayout({
     <main>
       <Navbar />
       <Toaster />
-      <div className='sm:ml-[4.5rem] mt-2'>{children}</div>
+      <div className='sm:ml-[3.7rem] px-[1rem] lg:px-[1.5rem] xl:px-[2.5rem]'>{children}</div>
     </main>
   )
 }

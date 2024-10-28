@@ -8,7 +8,8 @@ export const registerNewAppointment = async (data: AppointmentInterface) => {
     const newAppointment = await prisma.citas.create({
       data: {
         ...data,
-        Fecha: new Date(data.Fecha),
+        FechaInicio: new Date(data.FechaInicio),
+        FechaFin: new Date(data.FechaFin),
       },
     });
 
@@ -29,7 +30,8 @@ export const updateAppointmentById = async (
       },
       data: {
         ...data,
-        Fecha: new Date(data.Fecha),
+        FechaInicio: new Date(data.FechaInicio),
+        FechaFin: new Date(data.FechaFin),
       },
     });
 
@@ -43,12 +45,33 @@ export const updateAppointmentById = async (
 
 export const getAllAppointment = async () => {
   try {
-    const appointments = await prisma.citas.findMany();
+    const appointments = await prisma.citas.findMany({
+      include: {
+        DatosClientes: true,
+        Productos: true,
+      },
+    });
 
     return appointments;
   } catch (error) {
-    throw new Error(
-      `Error al obtener las citas: ${error.message}`
-    );
+    throw new Error(`Error al obtener las citas: ${error.message}`);
+  }
+};
+
+export const getAppointmentById = async (id: number) => {
+  try {
+    const appointment = await prisma.citas.findUnique({
+      where: {
+        IdCita: id,
+      },
+      include: {
+        DatosClientes: true,
+        Productos: true,
+      },
+    });
+
+    return appointment;
+  } catch (error) {
+    throw new Error(`Error al obtener la cita: ${error.message}`);
   }
 };
