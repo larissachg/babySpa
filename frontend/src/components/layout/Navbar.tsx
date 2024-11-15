@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   CalendarDays,
+  ChartNoAxesCombined,
   CircleDollarSign,
   LogOutIcon,
   PanelLeft,
@@ -40,6 +41,18 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 
 const navItems = [
   {
@@ -82,6 +95,14 @@ const navItems = [
     name: "Usuarios",
     title: "Usuarios",
   },
+  {
+    href: "/reports",
+    icon: ChartNoAxesCombined,
+    label: "Reportes",
+    tooltip: "Reportes",
+    name: "Reportes",
+    title: "Reportes",
+  },
 ];
 
 export const Navbar = () => {
@@ -117,22 +138,41 @@ export const Navbar = () => {
               );
             })}
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link
-                  href="#"
-                  onClick={async () => {
-                    await logout();
-                    window.location.replace("/login");
-                  }}
-                  className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 text-muted-foreground hover:text-foreground`}
-                >
-                  <LogOutIcon className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">Cerrar sesión</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">Cerrar sesión</TooltipContent>
-            </Tooltip>
+            <AlertDialog>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <AlertDialogTrigger asChild>
+                    <button className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 text-muted-foreground hover:text-foreground">
+                      <LogOutIcon className="h-5 w-5 transition-all group-hover:scale-110" />
+                      <span className="sr-only">Cerrar sesión</span>
+                    </button>
+                  </AlertDialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent side="right">Cerrar sesión</TooltipContent>
+              </Tooltip>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Esta seguro que desea cerrar sesión?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={async () => {
+                      await logout();
+                      window.location.replace("/login");
+                    }}
+                  >
+                    Confirmar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </nav>
         </aside>
       </TooltipProvider>

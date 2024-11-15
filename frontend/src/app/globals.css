@@ -17,6 +17,11 @@ body {
   --blueLight: hsl(195, 76%, 63%);
   --blue: hsl(207, 61%, 60%);
   --gray: hsl(218, 11%, 39%);
+  --yellow: #f4f097;
+  --purple: #a493c7;
+  --green: #98cf8e;
+  --cyan: #a4dbde;
+  --coral: #f48080;
 }
 
 @layer base {

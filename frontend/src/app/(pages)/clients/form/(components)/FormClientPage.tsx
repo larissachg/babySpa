@@ -151,7 +151,7 @@ const FormClientPage = ({ data, type }: FormClientPageProps) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-[70vw] flex flex-col gap-5 justify-center items-center mx-auto"
         >
-          <Tabs defaultValue="client" className="w-full px-3">
+          <Tabs defaultValue="DatosClientes" className="w-full px-3">
             <TabsList className="bg-[var(--blue)] opacity-80 text-white flex gap-1 w-max mx-auto">
               <TabsTrigger value="DatosClientes" className="font-bold p-1">
                 Datos Cliente
