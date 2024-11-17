@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -16,10 +17,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { AppointmentInterface } from "@/interfaces";
+import { AppointmentInterface, ClientInterface } from "@/interfaces";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { registerAppointment } from "@/actions/appointments";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -38,12 +38,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { format, setHours, setMinutes } from "date-fns";
+import { addHours, addMinutes, format, set } from "date-fns";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Clock } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon, Check, ChevronsUpDown, ClockIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Label } from "@/components/ui/label";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { getClients } from "@/actions/clients";
 
 const appointmentSchema = z.object({
   IdCliente: z.number().positive("El ID de cliente es requerido"),
@@ -57,65 +73,106 @@ const appointmentSchema = z.object({
 
 const defaultValue: AppointmentInterface = {
   IdCita: 0,
-  IdCliente: 0,
-  FechaInicio: new Date(),
+  IdCliente: 4,
+  FechaInicio: set(addHours(new Date(), 1), {
+    minutes: 0,
+    seconds: 0,
+    milliseconds: 0,
+  }),
   FechaFin: new Date(),
   Estado: "Agendado",
-  IdProducto: 0,
-  Fisioterapeuta: "",
+  IdProducto: 1,
+  Fisioterapeuta: "Test",
   Observacion: "",
 };
 
 interface FormAppointmentProps {
   data?: AppointmentInterface;
+  refreshAppointments: () => Promise<void>;
   //   type?: "new" | "update";
 }
 
-export const FormAppointment = ({ data }: FormAppointmentProps) => {
-
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedTime, setSelectedTime] = useState<string>("09:00");
-
+export const FormAppointment = ({
+  data,
+  refreshAppointments,
+}: FormAppointmentProps) => {
   const form = useForm<AppointmentInterface>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: data ?? defaultValue,
   });
 
   const [formError, setFormError] = useState<string | undefined>(undefined);
-  const router = useRouter();
   const { toast } = useToast();
 
-  async function onSubmit(data: any) {
+  const [duracion, setDuracion] = useState({ hours: 1, minutes: 0 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [listaCLientes, setListaClientes] = useState<ClientInterface[]>([]);
 
-    const startTime = setHours(
-      setMinutes(selectedDate ?? new Date(), parseInt(selectedTime.split(":")[1])),
-      parseInt(selectedTime.split(":")[0])
-    );
-    const endTime = setHours(
-      setMinutes(startTime, parseInt(selectedTime.split(":")[1]) + 60),
-      parseInt(selectedTime.split(":")[0])
-    );
+  async function onSubmit(data: AppointmentInterface) {
+    let newEndDate = data.FechaInicio;
+    newEndDate = addHours(data.FechaInicio, duracion.hours);
+    newEndDate = addMinutes(data.FechaInicio, duracion.minutes);
 
     const appointmentData = {
       ...data,
-      FechaInicio: startTime,
-      FechaFin: endTime,
+      FechaFin: newEndDate,
     };
 
     const response = await registerAppointment(appointmentData);
 
     if (!response) return setFormError("Error al registrar la cita");
     if (response.errors) return setFormError(`${response.errors[0].msg}`);
+
+    setDuracion({ hours: 1, minutes: 0 });
+
     toast({
       variant: "success",
       description: "Cita registrada exitosamente!",
     });
-    return router.push("/appointments");
+
+    setIsModalOpen(false);
+    await refreshAppointments();
   }
+
+  function handleDateSelect(date: Date | undefined) {
+    if (date) {
+      form.setValue("FechaInicio", date);
+    }
+  }
+
+  function handleTimeChange(type: "hour" | "minute" | "ampm", value: string) {
+    const currentDate = form.getValues("FechaInicio") || new Date();
+    const newDate = new Date(currentDate);
+
+    if (type === "hour") {
+      const hour = parseInt(value, 10);
+      newDate.setHours(newDate.getHours() >= 12 ? hour + 12 : hour);
+    } else if (type === "minute") {
+      newDate.setMinutes(parseInt(value, 10));
+    } else if (type === "ampm") {
+      const hours = newDate.getHours();
+      if (value === "AM" && hours >= 12) {
+        newDate.setHours(hours - 12);
+      } else if (value === "PM" && hours < 12) {
+        newDate.setHours(hours + 12);
+      }
+    }
+
+    form.setValue("FechaInicio", newDate);
+  }
+
+  const fetchCustomers = async () => {
+    const customers: ClientInterface[] = await getClients();
+    setListaClientes(customers);
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
 
   return (
     <TooltipProvider>
-      <Dialog>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <Tooltip>
           <TooltipTrigger asChild>
             <DialogTrigger asChild>
@@ -127,7 +184,12 @@ export const FormAppointment = ({ data }: FormAppointmentProps) => {
           <TooltipContent side="top">Agregar Cita</TooltipContent>
         </Tooltip>
 
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent
+          className="sm:max-w-[425px]"
+          onInteractOutside={(e) => {
+            e.preventDefault();
+          }}
+        >
           <DialogHeader>
             <DialogTitle>Agregar Cita</DialogTitle>
             <DialogDescription>
@@ -142,87 +204,279 @@ export const FormAppointment = ({ data }: FormAppointmentProps) => {
                   control={form.control}
                   name="IdCliente"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cliente</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          placeholder="ID del Cliente"
-                        />
-                      </FormControl>
-                      {form.formState.errors.IdCliente && (
-                        <span className="text-red-500">
-                          El cliente es requerido
-                        </span>
-                      )}
+                    <FormItem className="flex flex-col col-start-1 col-end-3 w-full">
+                      <FormLabel>Bebe</FormLabel>
+                      <Popover modal={true}>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "justify-between",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value
+                                ? listaCLientes.find(
+                                    (cliente) =>
+                                      cliente.IdCliente === field.value
+                                  )?.NombreBebe
+                                : "Seleccionar Bebe"}
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                          <Command>
+                            <CommandInput
+                              placeholder="Buscar cliente..."
+                              className="h-9"
+                            />
+                            <CommandList>
+                              <CommandEmpty>
+                                Cliente no encontrado.
+                              </CommandEmpty>
+                              <CommandGroup>
+                                {listaCLientes.map((cliente) => (
+                                  <CommandItem
+                                    value={cliente.NombreBebe}
+                                    key={cliente.IdCliente}
+                                    onSelect={() => {
+                                      form.setValue(
+                                        "IdCliente",
+                                        cliente.IdCliente!
+                                      );
+                                    }}
+                                  >
+                                    {cliente.NombreBebe}
+                                    <Check
+                                      className={cn(
+                                        "ml-auto",
+                                        cliente.IdCliente === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* <FormField
+                {/* Fecha y hora de inicio */}
+                <FormField
                   control={form.control}
                   name="FechaInicio"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Fecha y Hora de Inicio</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="datetime-local"
-                          value={field.value ? format(new Date(field.value), "yyyy-MM-dd'T'HH:mm") : ""}
-                          onChange={(e) =>
-                            field.onChange(new Date(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      {form.formState.errors.FechaInicio && (
-                        <span className="text-red-500">
-                          El cliente es requerido
-                        </span>
-                      )}
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Seleccionar hora y fecha</FormLabel>
+                      <Popover modal={true}>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              role="dialog"
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "MM/dd/yyyy hh:mm aa")
+                              ) : (
+                                <span>MM/DD/YYYY hh:mm aa</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <div className="sm:flex">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={handleDateSelect}
+                              initialFocus
+                            />
+                            <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+                              <ScrollArea className="w-64 sm:w-auto">
+                                <div className="flex sm:flex-col p-2">
+                                  {Array.from({ length: 12 }, (_, i) => i + 1)
+                                    .reverse()
+                                    .map((hour) => (
+                                      <Button
+                                        key={hour}
+                                        role="listitem"
+                                        type="button"
+                                        size="icon"
+                                        variant={
+                                          field.value &&
+                                          field.value.getHours() % 12 ===
+                                            hour % 12
+                                            ? "default"
+                                            : "ghost"
+                                        }
+                                        className="sm:w-full shrink-0 aspect-square"
+                                        onClick={() =>
+                                          handleTimeChange(
+                                            "hour",
+                                            hour.toString()
+                                          )
+                                        }
+                                      >
+                                        {hour}
+                                      </Button>
+                                    ))}
+                                </div>
+                                <ScrollBar
+                                  orientation="horizontal"
+                                  className="sm:hidden"
+                                />
+                              </ScrollArea>
+                              <ScrollArea className="w-64 sm:w-auto">
+                                <div className="flex sm:flex-col p-2">
+                                  {Array.from(
+                                    { length: 4 },
+                                    (_, i) => i * 15
+                                  ).map((minute) => (
+                                    <Button
+                                      key={minute}
+                                      size="icon"
+                                      role="listitem"
+                                      type="button"
+                                      variant={
+                                        field.value &&
+                                        field.value.getMinutes() === minute
+                                          ? "default"
+                                          : "ghost"
+                                      }
+                                      className="sm:w-full shrink-0 aspect-square"
+                                      onClick={() =>
+                                        handleTimeChange(
+                                          "minute",
+                                          minute.toString()
+                                        )
+                                      }
+                                    >
+                                      {minute.toString().padStart(2, "0")}
+                                    </Button>
+                                  ))}
+                                </div>
+                                <ScrollBar
+                                  orientation="horizontal"
+                                  className="sm:hidden"
+                                />
+                              </ScrollArea>
+                              <ScrollArea className="">
+                                <div className="flex sm:flex-col p-2">
+                                  {["AM", "PM"].map((ampm) => (
+                                    <Button
+                                      key={ampm}
+                                      size="icon"
+                                      variant={
+                                        field.value &&
+                                        ((ampm === "AM" &&
+                                          field.value.getHours() < 12) ||
+                                          (ampm === "PM" &&
+                                            field.value.getHours() >= 12))
+                                          ? "default"
+                                          : "ghost"
+                                      }
+                                      className="sm:w-full shrink-0 aspect-square"
+                                      onClick={() =>
+                                        handleTimeChange("ampm", ampm)
+                                      }
+                                    >
+                                      {ampm}
+                                    </Button>
+                                  ))}
+                                </div>
+                              </ScrollArea>
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
                       <FormMessage />
                     </FormItem>
                   )}
-                /> */}
+                />
 
-                {/* Fecha y hora de inicio */}
-              <div className="col-span-2">
-                <label>Fecha y Hora de Inicio</label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className="w-full justify-start text-left font-normal"
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {selectedDate ? format(selectedDate, "PPP") : "Seleccionar Fecha"}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={setSelectedDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-
-                <div className="mt-2">
-                  <label>Hora</label>
-                  <div className="flex items-center">
-                    <Clock className="mr-2 h-4 w-4" />
-                    <Input
-                      type="time"
-                      value={selectedTime}
-                      onChange={(e) => setSelectedTime(e.target.value)}
-                      className="w-full"
-                    />
-                  </div>
+                <div className="flex flex-col">
+                  <Label className="mb-2">Duración de la sesión</Label>
+                  <Popover modal={true}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full pl-3 text-left font-normal"
+                      >
+                        {duracion.hours}h{" "}
+                        {duracion.minutes.toString().padStart(2, "0")}m
+                        <ClockIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <div className="sm:flex">
+                        <ScrollArea className="w-64 sm:w-auto">
+                          <div className="flex sm:flex-col p-2">
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                              (hour) => (
+                                <Button
+                                  key={hour}
+                                  size="icon"
+                                  variant={
+                                    duracion.hours === hour
+                                      ? "default"
+                                      : "ghost"
+                                  }
+                                  className="sm:w-full shrink-0 aspect-square"
+                                  onClick={() => {
+                                    setDuracion((prev) => ({
+                                      ...prev,
+                                      hours: hour,
+                                    }));
+                                  }}
+                                >
+                                  {hour}h
+                                </Button>
+                              )
+                            )}
+                          </div>
+                        </ScrollArea>
+                        <ScrollArea className="w-64 sm:w-auto">
+                          <div className="flex sm:flex-col p-2">
+                            {[0, 15, 30, 45].map((minute) => (
+                              <Button
+                                key={minute}
+                                size="icon"
+                                variant={
+                                  duracion.minutes === minute
+                                    ? "default"
+                                    : "ghost"
+                                }
+                                className="sm:w-full shrink-0 aspect-square"
+                                onClick={() => {
+                                  setDuracion((prev) => ({
+                                    ...prev,
+                                    minutes: minute,
+                                  }));
+                                }}
+                              >
+                                {minute.toString().padStart(2, "0")}m
+                              </Button>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                 </div>
-              </div>
 
                 <FormField
                   control={form.control}
@@ -276,11 +530,11 @@ export const FormAppointment = ({ data }: FormAppointmentProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Fisioterapeuta</FormLabel>
-                        <Input
-                          {...field}
-                          type="text"
-                          placeholder="Nombre del Fisioterapeuta"
-                        />
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Nombre del Fisioterapeuta"
+                      />
                       <FormMessage />
                     </FormItem>
                   )}
@@ -292,26 +546,36 @@ export const FormAppointment = ({ data }: FormAppointmentProps) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Observaciones</FormLabel>
-                        <Input
-                          {...field}
-                          type="text"
-                          placeholder="Observaciones"
-                        />
+                      <Input
+                        {...field}
+                        type="text"
+                        placeholder="Observaciones"
+                      />
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
 
-              <DialogFooter>
+              <DialogFooter className="mt-4">
                 {formError && (
                   <p className="text-red-500 text-sm mt-2">{formError}</p>
                 )}
 
-                <div className="flex justify-end space-x-4">
-                  <Button type="button" onClick={() => form.reset()}>Cancelar</Button>
-                  <Button type="submit">Guardar</Button>
-                </div>
+                <DialogClose asChild>
+                  <div className="flex justify-end space-x-4">
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        form.reset();
+                        setDuracion({ hours: 1, minutes: 0 });
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button type="submit">Guardar</Button>
+                  </div>
+                </DialogClose>
               </DialogFooter>
             </form>
           </Form>

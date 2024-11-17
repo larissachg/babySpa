@@ -11,8 +11,7 @@ import { format, parse, startOfWeek, getDay } from "date-fns";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./calendar.css";
 import { es } from "date-fns/locale/es";
-import { useCallback, useState } from "react";
-import { FormAppointment } from "./FormAppointment";
+import { useCallback, useState } from "react"; 
 
 const locales = {
   es: es,
@@ -47,7 +46,7 @@ interface CalendarProps {
 }
 
 export const Calendar = ({ appointments }: CalendarProps) => {
-  const [view, setView] = useState<View>(Views.WEEK);
+  const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState(new Date());
 
   const handleOnChangeView = (selectView: View) => {
@@ -81,9 +80,7 @@ export const Calendar = ({ appointments }: CalendarProps) => {
             console.log(event);
           }}
         />
-      </div>
-
-      <FormAppointment/>
+      </div> 
     </div>
   );
 };
